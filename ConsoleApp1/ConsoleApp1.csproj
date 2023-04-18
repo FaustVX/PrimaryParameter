@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../PrimaryParameter.SG/PrimaryParameter.SG.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+    <ProjectReference Include="../PrimaryParameter.SG/PrimaryParameter.SG.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" ExcludeAssets="runtime" />
   </ItemGroup>
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
