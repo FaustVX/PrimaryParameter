@@ -2,7 +2,11 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
+
+[assembly: InternalsVisibleTo("PrimaryParameter.Tests")]
 
 namespace PrimaryParameter.SG
 {
@@ -13,6 +17,19 @@ namespace PrimaryParameter.SG
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             //Debugger.Launch();
+            context.RegisterPostInitializationOutput(ctx =>
+            {
+                ctx.AddSource("FieldAttribute.g.cs", """
+                    namespace PrimaryParameter.SG
+                    {
+                        [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = true)]
+                        public sealed class FieldAttribute : Attribute
+                        {
+                            public string Name { get; init; }
+                        }
+                    }
+                    """);
+            });
             // Do a simple filter for enums
             IncrementalValuesProvider<ParameterSyntax> enumDeclarations = context.SyntaxProvider
                 .CreateSyntaxProvider(
@@ -28,7 +45,7 @@ namespace PrimaryParameter.SG
         }
 
         static bool IsSyntaxTargetForGeneration(SyntaxNode s, CancellationToken token)
-            => s is ParameterSyntax { AttributeLists.Count: > 0 };
+            => s is ParameterSyntax { AttributeLists.Count: > 0, Parent.Parent: BaseTypeDeclarationSyntax };
 
         static ParameterSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context, CancellationToken token)
         {
@@ -50,7 +67,7 @@ namespace PrimaryParameter.SG
                     var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
                     // Is the attribute the [EnumExtensions] attribute?
-                    if (fullName == typeof(FieldAttribute).FullName)
+                    if (fullName == "PrimaryParameter.SG.FieldAttribute")
                     {
                         // return the enum
                         return parameterSyntax;
@@ -77,11 +94,13 @@ namespace PrimaryParameter.SG
             var paramsToGenerate = GetTypesToGenerate(compilation, distinctParams, context.CancellationToken);
 
             GenerateFiles(paramsToGenerate, context);
+
+
         }
 
         static IEnumerable<Parameter> GetTypesToGenerate(Compilation compilation, IEnumerable<ParameterSyntax> parameters, CancellationToken ct)
         {
-            if (compilation.GetTypeByMetadataName(typeof(FieldAttribute).FullName) == null)
+            if (compilation.GetTypeByMetadataName("PrimaryParameter.SG.FieldAttribute") == null)
             {
                 // If this is null, the compilation couldn't find the marker attribute type
                 // which suggests there's something very wrong! Bail out..
@@ -258,10 +277,6 @@ namespace PrimaryParameter.SG
                 => string.Join(".", Iterate().Select(static c => c.Name));
         }
     }
-
-    [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = true)]
-    public sealed class FieldAttribute : Attribute
-    { }
 }
 
 namespace System.Runtime.CompilerServices
