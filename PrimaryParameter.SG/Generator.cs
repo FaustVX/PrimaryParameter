@@ -31,7 +31,7 @@ namespace PrimaryParameter.SG
                     """);
             });
             // Do a simple filter for enums
-            IncrementalValuesProvider<ParameterSyntax> enumDeclarations = context.SyntaxProvider
+            var enumDeclarations = context.SyntaxProvider
                 .CreateSyntaxProvider(
                     predicate: IsSyntaxTargetForGeneration, // select enums with attributes
                     transform: GetSemanticTargetForGeneration) // sect the enum with the [EnumExtensions] attribute
@@ -41,7 +41,7 @@ namespace PrimaryParameter.SG
             var compilationAndEnums = context.CompilationProvider.Combine(enumDeclarations.Collect());
 
             // Generate the source using the compilation and enums
-            context.RegisterSourceOutput(compilationAndEnums, static (spc, source) => Execute(source.Left, source.Right, spc));
+            context.RegisterSourceOutput(compilationAndEnums, static (spc, source) => Execute(source.Left, source.Right!, spc));
         }
 
         static bool IsSyntaxTargetForGeneration(SyntaxNode s, CancellationToken token)
@@ -91,14 +91,14 @@ namespace PrimaryParameter.SG
             var distinctParams = parameters.Distinct();
 
             // Convert each EnumDeclarationSyntax to an EnumToGenerate
-            var paramsToGenerate = GetTypesToGenerate(compilation, distinctParams, context.CancellationToken);
+            var paramsToGenerate = GetTypesToGenerate(compilation, distinctParams, context);
 
             GenerateFiles(paramsToGenerate, context);
 
 
         }
 
-        static IEnumerable<Parameter> GetTypesToGenerate(Compilation compilation, IEnumerable<ParameterSyntax> parameters, CancellationToken ct)
+        static IEnumerable<Parameter> GetTypesToGenerate(Compilation compilation, IEnumerable<ParameterSyntax> parameters, SourceProductionContext context)
         {
             if (compilation.GetTypeByMetadataName("PrimaryParameter.SG.FieldAttribute") == null)
             {
@@ -110,7 +110,7 @@ namespace PrimaryParameter.SG
             foreach (var paramSyntax in parameters)
             {
                 // stop if we're asked to
-                ct.ThrowIfCancellationRequested();
+                context.CancellationToken.ThrowIfCancellationRequested();
 
                 // Get the semantic representation of the enum syntax
                 var semanticModel = compilation.GetSemanticModel(paramSyntax.SyntaxTree);
@@ -122,7 +122,8 @@ namespace PrimaryParameter.SG
 
                 // Create an EnumToGenerate for use in the generation phase
                 var containingType = (BaseTypeDeclarationSyntax)((ParameterListSyntax)paramSyntax.Parent!).Parent!;
-                yield return new(GetNamespace(containingType), GetParentClasses(containingType)!, paramSyntax.Identifier.Text, compilation.GetSemanticModel(paramSyntax.SyntaxTree).GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString());
+                containingType.Accept(new C(paramSyntax, semanticModel, context));
+                yield return new(GetNamespace(containingType), GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString());
             }
         }
 
@@ -275,6 +276,25 @@ namespace PrimaryParameter.SG
             }
             public string ConcatTypeName()
                 => string.Join(".", Iterate().Select(static c => c.Name));
+        }
+    }
+
+    class C(ParameterSyntax parameter, SemanticModel semanticModel, SourceProductionContext context) : CSharpSyntaxWalker
+    {
+        private readonly ISymbol _paramSymbol = semanticModel.GetDeclaredSymbol(parameter)!;
+        public static readonly DiagnosticDescriptor DiagnosticDescriptor = new(
+            id: "PC01",
+            title: "Accessing a Primary Parameter",
+            messageFormat: "Can't access a primary parameter ('{0}') with a [Field] attribute, use '_{0}'",
+            category: "tests",
+            defaultSeverity: DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
+        public override void VisitIdentifierName(IdentifierNameSyntax node)
+        {
+            var nodeSymbol = semanticModel.GetSymbolInfo(node).Symbol;
+            if (_paramSymbol.Equals(nodeSymbol, SymbolEqualityComparer.Default))
+                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptor, node.GetLocation(), nodeSymbol.Name));
         }
     }
 }
