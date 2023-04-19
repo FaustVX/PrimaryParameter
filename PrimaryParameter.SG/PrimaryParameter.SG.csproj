@@ -18,12 +18,19 @@
   <!-- This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    <None Include="..\LICENSE" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <PropertyGroup>
-    <PackageId>FaustVX.PrimariParameter.SG</PackageId>
+    <PackageId>FaustVX.PrimaryParameter.SG</PackageId>
     <Version>0.1.0</Version>
     <Authors>FaustVX</Authors>
+    <RepositoryUrl>https://github.com/FaustVX/PrimaryParameter</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>primary constructor parameter readonly field error</PackageTags>
   </PropertyGroup>
 
 </Project>
