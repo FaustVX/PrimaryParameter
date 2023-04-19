@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
+    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+
+  <!-- Add these 👇 to the base template  -->
+  <ItemGroup>
+    <PackageReference Include="Verify.MSTest" Version="19.12.3" />
+    <PackageReference Include="Verify.SourceGenerators" Version="2.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0-1.final" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.5-beta1.23165.1" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Add  👇 a reference to the generator project  -->
+  <ItemGroup>
+    <ProjectReference Include="../PrimaryParameter.SG/PrimaryParameter.SG.csproj" />
+  </ItemGroup>
+
+</Project>
