@@ -150,9 +150,8 @@ namespace PrimaryParameter.SG
                 // Depends what you want to support!
                 sb
                     .Append("namespace ")
-                    .Append(nameSpace)
-                    .AppendLine(@"
-    {");
+                    .AppendLine(nameSpace)
+                    .AppendLine("{");
             }
 
             // Loop through the full parent type hiearchy, starting with the outermost
@@ -164,15 +163,16 @@ namespace PrimaryParameter.SG
                     .Append(' ')
                     .Append(parentClass.Name) // e.g. Outer/Generic<T>
                     .Append(' ')
-                    .Append(parentClass.Constraints) // e.g. where T: new()
-                    .AppendLine(@"
-        {");
+                    .AppendLine(parentClass.Constraints) // e.g. where T: new()
+                    .Append(new string(' ', 4 * (parentsCount + 1)))
+                    .AppendLine(@"{");
                 parentsCount++; // keep track of how many layers deep we are
                 parentClass = parentClass.Child; // repeat with the next child
             }
 
-            // Write the actual target generation code here. Not shown for brevity
-            sb.Append(inner);
+            // Write the actual target generation code here
+            sb.Append(new string(' ', 4 * (parentsCount + 1)));
+            sb.AppendLine(inner);
 
             // We need to "close" each of the parent types, so write
             // the required number of '}'
