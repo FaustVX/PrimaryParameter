@@ -8,6 +8,16 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Exclude the output of source generators from the compilation -->
+    <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="../PrimaryParameter.SG/PrimaryParameter.SG.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" ExcludeAssets="runtime" />
   </ItemGroup>
