@@ -20,4 +20,10 @@
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PackageId>FaustVX.PrimariParameter.SG</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>FaustVX</Authors>
+  </PropertyGroup>
+
 </Project>
