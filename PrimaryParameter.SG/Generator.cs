@@ -15,7 +15,7 @@ internal class Generator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        //Debugger.Launch();
+        //System.Diagnostics.Debugger.Launch();
         context.RegisterPostInitializationOutput(ctx =>
             ctx.AddSource("FieldAttribute.g.cs", """
                 namespace PrimaryParameter.SG
@@ -183,16 +183,17 @@ internal class Generator : IIncrementalGenerator
         // Loop through the full parent type hiearchy, starting with the outermost
         while (parentClass is not null)
         {
+            parentsCount++; // keep track of how many layers deep we are
             sb
-                .Append("    partial ")
+                .Append(new string(' ', 4 * parentsCount))
+                .Append("partial ")
                 .Append(parentClass.Keyword) // e.g. class/struct/record
                 .Append(' ')
                 .Append(parentClass.Name) // e.g. Outer/Generic<T>
                 .Append(' ')
                 .AppendLine(parentClass.Constraints) // e.g. where T: new()
-                .Append(new string(' ', 4 * (parentsCount + 1)))
+                .Append(new string(' ', 4 * parentsCount))
                 .AppendLine(@"{");
-            parentsCount++; // keep track of how many layers deep we are
             parentClass = parentClass.Child; // repeat with the next child
         }
 
@@ -205,9 +206,11 @@ internal class Generator : IIncrementalGenerator
 
         // We need to "close" each of the parent types, so write
         // the required number of '}'
-        for (var i = 0; i < parentsCount; i++)
+        for (; parentsCount > 0; parentsCount--)
         {
-            sb.AppendLine(@"    }");
+            sb
+                .Append(new string(' ', 4 * parentsCount))
+                .AppendLine(@"}");
         }
 
         // Close the namespace, if we had one
