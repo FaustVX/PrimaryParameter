@@ -18,7 +18,7 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
     public override void VisitIdentifierName(IdentifierNameSyntax node)
     {
         var nodeSymbol = semanticModel.GetSymbolInfo(node).Symbol;
-        if (_paramSymbol.Equals(nodeSymbol, SymbolEqualityComparer.Default))
+        if (_paramSymbol.Equals(nodeSymbol, SymbolEqualityComparer.Default) && !parameter.FieldNames.Any(n => n.Name == _paramSymbol.Name))
             context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptor, node.GetLocation(), nodeSymbol.Name, string.Join(" or ", parameter.FieldNames.Select(static n => $"'{n.Name}'"))));
     }
 }
