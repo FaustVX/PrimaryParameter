@@ -22,7 +22,7 @@ record ParentClass(string Keyword, string Name, string Constraints, ParentClass?
         var parentClassInfo = CreateParentClass((TypeDeclarationSyntax)typeSyntax, null);
 
         // Keep looping while we're in a supported nested type
-        while (parentSyntax != null && parentSyntax.Kind() is SyntaxKind.ClassDeclaration or SyntaxKind.StructDeclaration)
+        while (parentSyntax != null && parentSyntax.Kind() is SyntaxKind.ClassDeclaration or SyntaxKind.StructDeclaration or SyntaxKind.RecordDeclaration or SyntaxKind.RecordStructDeclaration)
         {
             // Record the parent type keyword (class/struct etc), name, and constraints
             parentClassInfo = CreateParentClass(parentSyntax, parentClassInfo);
@@ -36,7 +36,7 @@ record ParentClass(string Keyword, string Name, string Constraints, ParentClass?
 
         static ParentClass CreateParentClass(TypeDeclarationSyntax typeSyntax, ParentClass? parent)
             => new(
-                Keyword: typeSyntax.Keyword.ValueText,
+                Keyword: typeSyntax.Keyword.ValueText + (typeSyntax is RecordDeclarationSyntax { ClassOrStructKeyword.Value: string cors } ? " " + cors : ""),
                 Name: typeSyntax.Identifier.ToString() + typeSyntax.TypeParameterList,
                 Constraints: typeSyntax.ConstraintClauses.ToString(),
                 Child: parent);

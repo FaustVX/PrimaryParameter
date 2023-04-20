@@ -23,13 +23,24 @@ public partial class C([Field(Name = "_a"), Field(Name = "b"), Field]int i)
     {
         i++;
         Console.WriteLine(i);
+        Console.WriteLine(_s);
     }
 }
 
-public partial record R([Field]int i)
+public partial record struct R([Field]int i)
 {
     void M()
     {
         Console.WriteLine(_i);
+    }
+
+    partial class C([Field]string s)
+    {
+
+        public void M1()
+        {
+            Console.WriteLine(s);
+            Console.WriteLine(_s);
+        }
     }
 }
