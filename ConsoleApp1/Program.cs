@@ -8,7 +8,7 @@
         { }
     }
 
-    public partial class C([Field(Name = "_a"), Field(Name = "b"), Field] int i, [Field] string s)
+    public partial class C([Field(Name = "_a"), Field(Name = "b"), Field] int i, [Property(WithInit = true), Field] string s)
     {
         public void M0()
         {
@@ -18,6 +18,7 @@
             Console.WriteLine(_a);
             Console.WriteLine(b);
             Console.WriteLine(_i);
+            Console.WriteLine(S);
             Console.WriteLine(_s);
         }
         public void M1()

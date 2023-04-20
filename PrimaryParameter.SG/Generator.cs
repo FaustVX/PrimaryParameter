@@ -17,6 +17,7 @@ internal class Generator : IIncrementalGenerator
     {
         //System.Diagnostics.Debugger.Launch();
         context.RegisterPostInitializationOutput(ctx =>
+        {
             ctx.AddSource("FieldAttribute.g.cs", """
                 namespace PrimaryParameter.SG
                 {
@@ -26,12 +27,24 @@ internal class Generator : IIncrementalGenerator
                         public string Name { get; init; }
                     }
                 }
-                """));
+                """);
+            ctx.AddSource("PropertyAttribute.g.cs", """
+                namespace PrimaryParameter.SG
+                {
+                    [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = true)]
+                    public sealed class PropertyAttribute : Attribute
+                    {
+                        public string Name { get; init; }
+                        public bool WithInit { get; init; }
+                    }
+                }
+                """);
+        });
         // Do a simple filter for paramerter
         var paramDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: IsSyntaxTargetForGeneration, // select params with attributes
-                transform: GetSemanticTargetForGeneration) // sect the param with the [Field] attribute
+                transform: GetSemanticTargetForGeneration) // sect the param with the [Field] or [Property] attribute
             .Where(static m => m is not null)!; // filter out attributed parameters that we don't care about
 
         // Combine the selected parameters with the `Compilation`
@@ -63,8 +76,8 @@ internal class Generator : IIncrementalGenerator
                 var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
                 var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
-                // Is the attribute the [Field] attribute?
-                if (fullName == "PrimaryParameter.SG.FieldAttribute")
+                // Is the attribute the [Field] or [Property] attribute?
+                if (fullName is "PrimaryParameter.SG.FieldAttribute" or "PrimaryParameter.SG.PropertyAttribute")
                 {
                     // return the parameter
                     return parameterSyntax;
@@ -103,6 +116,12 @@ internal class Generator : IIncrementalGenerator
             // which suggests there's something very wrong! Bail out..
             yield break;
         }
+        if (compilation.GetTypeByMetadataName("PrimaryParameter.SG.PropertyAttribute") is not INamedTypeSymbol propertyAttributeSymbol)
+        {
+            // If this is null, the compilation couldn't find the marker attribute type
+            // which suggests there's something very wrong! Bail out..
+            yield break;
+        }
 
         foreach (var paramSyntax in parameters)
         {
@@ -119,42 +138,49 @@ internal class Generator : IIncrementalGenerator
 
             var containingType = (BaseTypeDeclarationSyntax)((ParameterListSyntax)paramSyntax.Parent!).Parent!;
 
-            var fieldNames = new HashSet<string>();
+            var memberNames = new HashSet<IGeneratedMember>();
 
             foreach (var attribute in paramSymbol.GetAttributes())
             {
-                if (!fieldAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
+                if (fieldAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
                 {
-                    // This isn't the [Field] attribute
+                    memberNames.Add(new GenerateField(GetAttributeProperty<string>(attribute, "Name") ?? ("_" + paramSyntax.Identifier.Text)));
+                }
+                else if (propertyAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
+                {
+                    memberNames.Add(new GenerateProperty(GetAttributeProperty<string>(attribute, "Name") ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]), GetAttributeProperty<bool>(attribute, "WithInit")));
+                }
+                else
+                {
+                    // This isn't the [Field] nor [Property] attribute
                     continue;
                 }
 
-                fieldNames.Add(GetFieldName(attribute) ?? "_" + paramSyntax.Identifier.Text);
             }
-            var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), fieldNames.ToArray());
+            var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), memberNames.ToArray());
             yield return parameter;
             containingType.Accept(new SyntaxWalker(paramSyntax, semanticModel, context, parameter));
         }
     }
 
-    static string? GetFieldName(AttributeData attributeData)
+    static T? GetAttributeProperty<T>(AttributeData attributeData, string propertyName)
     {
         // This is the attribute, check all of the named arguments
         foreach (var namedArgument in attributeData.NamedArguments)
         {
             // Is this the Name argument?
-            if (namedArgument.Key == "Name" && namedArgument.Value.Value?.ToString() is { } n)
+            if (namedArgument.Key == propertyName && namedArgument.Value.Value is T n)
             {
                 return n;
             }
         }
 
-        return null;
+        return default;
     }
 
     static void GenerateFiles(IEnumerable<Parameter> parameters, SourceProductionContext context)
     {
-        context.AddSource("FaustVX.PrimaryParameter.SG.g.cs", string.Concat(parameters.Select(static item => GetResource(item.Namespace, item.TypeName, item.FieldNames.Select(n => $"private readonly {item.ParamType} {n} = {item.ParamName};")))));
+        context.AddSource("FaustVX.PrimaryParameter.SG.g.cs", string.Concat(parameters.Select(static item => GetResource(item.Namespace, item.TypeName, item.FieldNames.Select(n => n.GenerateMember(item))))));
     }
 
     static string GetResource(string nameSpace, ParentClass? parentClass, IEnumerable<string> inner)

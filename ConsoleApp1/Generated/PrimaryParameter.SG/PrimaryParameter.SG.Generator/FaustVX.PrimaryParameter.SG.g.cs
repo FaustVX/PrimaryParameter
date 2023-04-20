@@ -11,6 +11,7 @@ namespace ConsoleApp1
 {
     partial class C
     {
+        private string S { get; init; } = s;
         private readonly string _s = s;
     }
 }
