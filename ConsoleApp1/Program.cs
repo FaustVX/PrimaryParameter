@@ -1,4 +1,6 @@
-﻿namespace ConsoleApp1
+﻿//#define SHOW_ERRORS
+
+namespace ConsoleApp1
 {
     using PrimaryParameter.SG;
 
@@ -21,11 +23,13 @@
             Console.WriteLine(S);
             Console.WriteLine(s);
         }
+#if SHOW_ERRORS
         public void M1()
         {
             i++;
             Console.WriteLine(i);
         }
+#endif
     }
 
     public partial record struct R
@@ -36,7 +40,9 @@
 
             public void M1()
             {
+#if SHOW_ERRORS
                 Console.WriteLine(s);
+#endif
                 Console.WriteLine(_s);
             }
         }

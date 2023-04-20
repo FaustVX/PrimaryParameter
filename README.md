@@ -2,6 +2,7 @@
 [![NuGet version (FaustVX.PrimaryParameter.SG)](https://img.shields.io/nuget/v/FaustVX.PrimaryParameter.SG.svg)](https://www.nuget.org/packages/FaustVX.PrimaryParameter.SG/)
 [![Update NuGet](https://github.com/FaustVX/PrimaryParameter/actions/workflows/pushToNuget.yaml/badge.svg)](https://github.com/FaustVX/PrimaryParameter/actions/workflows/pushToNuget.yaml)
 
+## Description
 Using a `Field` or `Property` attributes on parameters.
 
 Automaticaly generate `private readonly` fields or `private` property.
@@ -36,7 +37,7 @@ To eneble the feaure, type `[Field]` or `[Property]` before the primary paramete
 
 You can type as many attributes as you want on a single parameter.
 
-### Attribute Properties
+## Attribute Properties
 <table>
   <tr>
     <th>Attributes</th>
@@ -71,6 +72,7 @@ You can type as many attributes as you want on a single parameter.
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v0.3.1|21/04/2023|Added `Scope` property on `Property` attribute</br>Attributes are `internal`|
 |v0.3.0|20/04/2023|Added `Property` attribute|
 |v0.2.0|20/04/2023|Support for `Name` fields and multiple `Field`|
 |v0.1.0|19/04/2023|Initial release|
