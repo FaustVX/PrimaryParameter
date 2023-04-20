@@ -8,9 +8,9 @@ record ParentClass(string Keyword, string Name, string Constraints, ParentClass?
 {
     private IEnumerable<ParentClass> Iterate()
     {
+        yield return this;
         foreach (var child in Child?.Iterate() ?? Enumerable.Empty<ParentClass>())
             yield return child;
-        yield return this;
     }
     public string ConcatTypeName()
         => string.Join(".", Iterate().Select(static c => c.Name));
