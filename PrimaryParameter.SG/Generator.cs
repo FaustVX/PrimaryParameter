@@ -98,7 +98,7 @@ internal class Generator : IIncrementalGenerator
 
     static IEnumerable<Parameter> GetTypesToGenerate(Compilation compilation, IEnumerable<ParameterSyntax> parameters, SourceProductionContext context)
     {
-        if (compilation.GetTypeByMetadataName("PrimaryParameter.SG.FieldAttribute") == null)
+        if (compilation.GetTypeByMetadataName("PrimaryParameter.SG.FieldAttribute") is not INamedTypeSymbol fieldAttributeSymbol)
         {
             // If this is null, the compilation couldn't find the marker attribute type
             // which suggests there's something very wrong! Bail out..
@@ -110,26 +110,53 @@ internal class Generator : IIncrementalGenerator
             // stop if we're asked to
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            // Get the semantic representation of the enum syntax
+            // Get the semantic representation of the parameter syntax
             var semanticModel = compilation.GetSemanticModel(paramSyntax.SyntaxTree);
-            if (semanticModel.GetDeclaredSymbol(paramSyntax) is not ISymbol)
+            if (semanticModel.GetDeclaredSymbol(paramSyntax) is not ISymbol paramSymbol)
             {
                 // something went wrong, bail out
                 continue;
             }
 
-            // Create an EnumToGenerate for use in the generation phase
             var containingType = (BaseTypeDeclarationSyntax)((ParameterListSyntax)paramSyntax.Parent!).Parent!;
-            containingType.Accept(new SyntaxWalker(paramSyntax, semanticModel, context));
-            yield return new(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString());
+            var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), GetFieldName(paramSymbol, fieldAttributeSymbol) ?? paramSyntax.Identifier.Text);
+            containingType.Accept(new SyntaxWalker(paramSyntax, semanticModel, context, parameter));
+            yield return parameter;
         }
+    }
+
+    static string? GetFieldName(ISymbol paramSymbol, INamedTypeSymbol fieldAttribute)
+    {
+        // Loop through all of the attributes on the parameter
+        foreach (var attributeData in paramSymbol.GetAttributes())
+        {
+            if (!fieldAttribute.Equals(attributeData.AttributeClass, SymbolEqualityComparer.Default))
+            {
+                // This isn't the [Field] attribute
+                continue;
+            }
+
+            // This is the attribute, check all of the named arguments
+            foreach (var namedArgument in attributeData.NamedArguments)
+            {
+                // Is this the Name argument?
+                if (namedArgument.Key == "Name" && namedArgument.Value.Value?.ToString() is { } n)
+                {
+                    return n;
+                }
+            }
+
+            break;
+        }
+
+        return null;
     }
 
     static void GenerateFiles(IEnumerable<Parameter> parameters, SourceProductionContext context)
     {
         foreach (var item in parameters)
         {
-            context.AddSource($"{item.Namespace}.{item.TypeName.ConcatTypeName()}.{item.ParamName}.g.cs", GetResource(item.Namespace, item.TypeName, $"private readonly {item.ParamType} _{item.ParamName} = {item.ParamName};"));
+            context.AddSource($"{item.Namespace}.{item.TypeName.ConcatTypeName()}.{item.FieldName}.g.cs", GetResource(item.Namespace, item.TypeName, $"private readonly {item.ParamType} {item.FieldName} = {item.ParamName};"));
         }
     }
 

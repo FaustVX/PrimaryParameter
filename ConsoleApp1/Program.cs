@@ -8,14 +8,14 @@ static class Program
     { }
 }
 
-public partial class C([Field]int i)
+public partial class C([Field(Name = "_a")]int i)
 {
     public void M0()
     {
         var i = 0;
         i++;
         Console.WriteLine(i);
-        Console.WriteLine(_i);
+        Console.WriteLine(_a);
     }
     public void M1()
     {

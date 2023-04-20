@@ -4,13 +4,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace PrimaryParameter.SG;
 
-class SyntaxWalker(ParameterSyntax parameter, SemanticModel semanticModel, SourceProductionContext context) : CSharpSyntaxWalker
+class SyntaxWalker(ParameterSyntax paramSyntax, SemanticModel semanticModel, SourceProductionContext context, Parameter parameter) : CSharpSyntaxWalker
 {
-    private readonly ISymbol _paramSymbol = semanticModel.GetDeclaredSymbol(parameter)!;
+    private readonly ISymbol _paramSymbol = semanticModel.GetDeclaredSymbol(paramSyntax)!;
     public static readonly DiagnosticDescriptor DiagnosticDescriptor = new(
         id: "PC01",
         title: "Accessing a Primary Parameter",
-        messageFormat: "Can't access a primary parameter ('{0}') with a [Field] attribute, use '_{0}'",
+        messageFormat: "Can't access a primary parameter ('{0}') with a [Field] attribute, use '{1}'",
         category: "tests",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
@@ -19,6 +19,6 @@ class SyntaxWalker(ParameterSyntax parameter, SemanticModel semanticModel, Sourc
     {
         var nodeSymbol = semanticModel.GetSymbolInfo(node).Symbol;
         if (_paramSymbol.Equals(nodeSymbol, SymbolEqualityComparer.Default))
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptor, node.GetLocation(), nodeSymbol.Name));
+            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptor, node.GetLocation(), nodeSymbol.Name, parameter.FieldName));
     }
 }
