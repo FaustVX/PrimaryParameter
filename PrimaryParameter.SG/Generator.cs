@@ -120,6 +120,8 @@ internal class Generator : IIncrementalGenerator
 
             var containingType = (BaseTypeDeclarationSyntax)((ParameterListSyntax)paramSyntax.Parent!).Parent!;
 
+            var fieldNames = new HashSet<string>();
+
             foreach (var attribute in paramSymbol.GetAttributes())
             {
                 if (!fieldAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
@@ -127,10 +129,12 @@ internal class Generator : IIncrementalGenerator
                     // This isn't the [Field] attribute
                     continue;
                 }
-                var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), GetFieldName(attribute) ?? paramSyntax.Identifier.Text);
-                containingType.Accept(new SyntaxWalker(paramSyntax, semanticModel, context, parameter));
-                yield return parameter;
+
+                fieldNames.Add(GetFieldName(attribute) ?? "_" + paramSyntax.Identifier.Text);
             }
+            var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), fieldNames.ToArray());
+            yield return parameter;
+            containingType.Accept(new SyntaxWalker(paramSyntax, semanticModel, context, parameter));
         }
     }
 
@@ -153,11 +157,11 @@ internal class Generator : IIncrementalGenerator
     {
         foreach (var item in parameters)
         {
-            context.AddSource($"{item.Namespace}.{item.TypeName.ConcatTypeName()}.{item.FieldName}.g.cs", GetResource(item.Namespace, item.TypeName, $"private readonly {item.ParamType} {item.FieldName} = {item.ParamName};"));
+            context.AddSource($"{item.Namespace}.{item.TypeName.ConcatTypeName()}.{item.ParamName}.g.cs", GetResource(item.Namespace, item.TypeName, item.FieldNames.Select(n => $"private readonly {item.ParamType} {n} = {item.ParamName};")));
         }
     }
 
-    static string GetResource(string nameSpace, ParentClass? parentClass, string inner)
+    static string GetResource(string nameSpace, ParentClass? parentClass, IEnumerable<string> inner)
     {
         var sb = new StringBuilder();
         var parentsCount = 0;
@@ -192,9 +196,12 @@ internal class Generator : IIncrementalGenerator
             parentClass = parentClass.Child; // repeat with the next child
         }
 
-        // Write the actual target generation code here
-        sb.Append(new string(' ', 4 * (parentsCount + 1)));
-        sb.AppendLine(inner);
+        foreach (var item in inner)
+        {
+            // Write the actual target generation code here
+            sb.Append(new string(' ', 4 * (parentsCount + 1)));
+            sb.AppendLine(item);
+        }
 
         // We need to "close" each of the parent types, so write
         // the required number of '}'
