@@ -26,20 +26,19 @@ internal class Generator : IIncrementalGenerator
                         public string Name { get; init; }
                     }
                 }
-                """)
-        );
-        // Do a simple filter for enums
-        var enumDeclarations = context.SyntaxProvider
+                """));
+        // Do a simple filter for paramerter
+        var paramDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: IsSyntaxTargetForGeneration, // select enums with attributes
-                transform: GetSemanticTargetForGeneration) // sect the enum with the [EnumExtensions] attribute
-            .Where(static m => m is not null)!; // filter out attributed enums that we don't care about
+                predicate: IsSyntaxTargetForGeneration, // select params with attributes
+                transform: GetSemanticTargetForGeneration) // sect the param with the [Field] attribute
+            .Where(static m => m is not null)!; // filter out attributed parameters that we don't care about
 
-        // Combine the selected enums with the `Compilation`
-        var compilationAndEnums = context.CompilationProvider.Combine(enumDeclarations.Collect());
+        // Combine the selected parameters with the `Compilation`
+        var compilationAndParameters = context.CompilationProvider.Combine(paramDeclarations.Collect());
 
-        // Generate the source using the compilation and enums
-        context.RegisterSourceOutput(compilationAndEnums, static (spc, source) => Execute(source.Left, source.Right!, spc));
+        // Generate the source using the compilation and parameters
+        context.RegisterSourceOutput(compilationAndParameters, static (spc, source) => Execute(source.Left, source.Right!, spc));
     }
 
     static bool IsSyntaxTargetForGeneration(SyntaxNode s, CancellationToken token)
@@ -64,10 +63,10 @@ internal class Generator : IIncrementalGenerator
                 var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
                 var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
-                // Is the attribute the [EnumExtensions] attribute?
+                // Is the attribute the [Field] attribute?
                 if (fullName == "PrimaryParameter.SG.FieldAttribute")
                 {
-                    // return the enum
+                    // return the parameter
                     return parameterSyntax;
                 }
             }
