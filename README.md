@@ -9,7 +9,7 @@ Forbid the use of primary constructor's parameters
 ## Usage
 
 ```cs
-partial class C([Field]int i) // type must be partial, but can be class / struct / record
+partial class C([Field(Name = "_a"), Field]int i) // type must be partial, but can be class / struct / record
 {
     public void M0()
     {
@@ -21,6 +21,7 @@ partial class C([Field]int i) // type must be partial, but can be class / struct
         var i = 0;
         i++;                    // don't error on usage of locals
         Console.WriteLine(_i);  // automaticaly created readonly field
+        Console.WriteLine(_a);	// automaticaly created readonly field based on Name property
     }
 }
 ```
@@ -28,4 +29,5 @@ partial class C([Field]int i) // type must be partial, but can be class / struct
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v0.2.0|20/04/2023|Support for `Name` fields and multiple `Field`|
 |v0.1.0|19/04/2023|Initial release|
