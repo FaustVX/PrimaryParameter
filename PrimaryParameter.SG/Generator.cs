@@ -119,34 +119,31 @@ internal class Generator : IIncrementalGenerator
             }
 
             var containingType = (BaseTypeDeclarationSyntax)((ParameterListSyntax)paramSyntax.Parent!).Parent!;
-            var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), GetFieldName(paramSymbol, fieldAttributeSymbol) ?? paramSyntax.Identifier.Text);
-            containingType.Accept(new SyntaxWalker(paramSyntax, semanticModel, context, parameter));
-            yield return parameter;
+
+            foreach (var attribute in paramSymbol.GetAttributes())
+            {
+                if (!fieldAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
+                {
+                    // This isn't the [Field] attribute
+                    continue;
+                }
+                var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), GetFieldName(attribute) ?? paramSyntax.Identifier.Text);
+                containingType.Accept(new SyntaxWalker(paramSyntax, semanticModel, context, parameter));
+                yield return parameter;
+            }
         }
     }
 
-    static string? GetFieldName(ISymbol paramSymbol, INamedTypeSymbol fieldAttribute)
+    static string? GetFieldName(AttributeData attributeData)
     {
-        // Loop through all of the attributes on the parameter
-        foreach (var attributeData in paramSymbol.GetAttributes())
+        // This is the attribute, check all of the named arguments
+        foreach (var namedArgument in attributeData.NamedArguments)
         {
-            if (!fieldAttribute.Equals(attributeData.AttributeClass, SymbolEqualityComparer.Default))
+            // Is this the Name argument?
+            if (namedArgument.Key == "Name" && namedArgument.Value.Value?.ToString() is { } n)
             {
-                // This isn't the [Field] attribute
-                continue;
+                return n;
             }
-
-            // This is the attribute, check all of the named arguments
-            foreach (var namedArgument in attributeData.NamedArguments)
-            {
-                // Is this the Name argument?
-                if (namedArgument.Key == "Name" && namedArgument.Value.Value?.ToString() is { } n)
-                {
-                    return n;
-                }
-            }
-
-            break;
         }
 
         return null;

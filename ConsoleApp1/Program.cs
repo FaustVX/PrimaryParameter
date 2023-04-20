@@ -8,7 +8,7 @@ static class Program
     { }
 }
 
-public partial class C([Field(Name = "_a")]int i)
+public partial class C([Field(Name = "_a"), Field(Name = "b")]int i)
 {
     public void M0()
     {
@@ -16,6 +16,7 @@ public partial class C([Field(Name = "_a")]int i)
         i++;
         Console.WriteLine(i);
         Console.WriteLine(_a);
+        Console.WriteLine(b);
     }
     public void M1()
     {
