@@ -159,7 +159,7 @@ internal class Generator : IIncrementalGenerator
             }
             var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), memberNames.ToArray());
             yield return parameter;
-            containingType.Accept(new SyntaxWalker(paramSyntax, semanticModel, context, parameter));
+            containingType.Accept(new ReportErrorWhenAccessingPrimaryParameter(paramSyntax, semanticModel, context, parameter));
         }
     }
 

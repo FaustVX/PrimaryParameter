@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace PrimaryParameter.SG;
 
-class SyntaxWalker(ParameterSyntax paramSyntax, SemanticModel semanticModel, SourceProductionContext context, Parameter parameter) : CSharpSyntaxWalker
+class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, SemanticModel semanticModel, SourceProductionContext context, Parameter parameter) : CSharpSyntaxWalker
 {
     private readonly ISymbol _paramSymbol = semanticModel.GetDeclaredSymbol(paramSyntax)!;
     public static readonly DiagnosticDescriptor DiagnosticDescriptor = new(
