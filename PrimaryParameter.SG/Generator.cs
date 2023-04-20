@@ -36,6 +36,7 @@ internal class Generator : IIncrementalGenerator
                     {
                         public string Name { get; init; }
                         public bool WithInit { get; init; }
+                        public string Scope { get; init; }
                     }
                 }
                 """);
@@ -148,7 +149,7 @@ internal class Generator : IIncrementalGenerator
                 }
                 else if (propertyAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
                 {
-                    memberNames.Add(new GenerateProperty(GetAttributeProperty<string>(attribute, "Name") ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]), GetAttributeProperty<bool>(attribute, "WithInit")));
+                    memberNames.Add(new GenerateProperty(GetAttributeProperty<string>(attribute, "Name") ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]), GetAttributeProperty<bool>(attribute, "WithInit"), GetAttributeProperty<string>(attribute, "Scope") ?? "private"));
                 }
                 else
                 {

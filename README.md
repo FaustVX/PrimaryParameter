@@ -51,7 +51,7 @@ You can type as many attributes as you want on a single parameter.
     <td><code>_i</code> (for a parameter named <code>i</code>)</td>
   </tr>
   <tr>
-    <td rowspan="2"><code>Property</code></td>
+    <td rowspan="3"><code>Property</code></td>
     <td><code>Name</code></td>
     <td>property to modify the generated property name</td>
     <td><code>I</code> (for a parameter named <code>i</code>)</td>
@@ -60,6 +60,11 @@ You can type as many attributes as you want on a single parameter.
     <td><code>WithInit</code></td>
     <td>to generate the <code>init</code> accessor along the <code>get</code></td>
     <td><code>false</code></td>
+  </tr>
+  <tr>
+    <td><code>Scope</code></td>
+    <td>to change the scope of the generated property</td>
+    <td><code>private</code></td>
   </tr>
 </table>
 

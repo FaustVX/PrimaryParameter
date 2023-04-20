@@ -15,8 +15,8 @@ record GenerateField(string Name) : IGeneratedMember
         => $"private readonly {param.ParamType} {Name} = {param.ParamName};";
 }
 
-record GenerateProperty(string Name, bool WithInit) : IGeneratedMember
+record GenerateProperty(string Name, bool WithInit, string Scope) : IGeneratedMember
 {
     public string GenerateMember(Parameter param)
-        => $$"""private {{param.ParamType}} {{Name}} { get; {{(WithInit ? "init; " : "")}}} = {{param.ParamName}};""";
+        => $$"""{{Scope}} {{param.ParamType}} {{Name}} { get; {{(WithInit ? "init; " : "")}}} = {{param.ParamName}};""";
 }
