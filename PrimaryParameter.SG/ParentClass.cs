@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace PrimaryParameter.SG;
 
-record ParentClass(string Keyword, string Name, string Constraints, ParentClass? Child)
+record ParentClass(string Keyword, string Name, ParentClass? Child)
 {
     private IEnumerable<ParentClass> Iterate()
     {
@@ -38,7 +38,6 @@ record ParentClass(string Keyword, string Name, string Constraints, ParentClass?
             => new(
                 Keyword: typeSyntax.Keyword.ValueText + (typeSyntax is RecordDeclarationSyntax { ClassOrStructKeyword.Value: string cors } ? " " + cors : ""),
                 Name: typeSyntax.Identifier.ToString() + typeSyntax.TypeParameterList,
-                Constraints: typeSyntax.ConstraintClauses.ToString(),
                 Child: parent);
     }
 }

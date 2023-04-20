@@ -155,10 +155,7 @@ internal class Generator : IIncrementalGenerator
 
     static void GenerateFiles(IEnumerable<Parameter> parameters, SourceProductionContext context)
     {
-        foreach (var item in parameters)
-        {
-            context.AddSource($"{item.Namespace}.{item.TypeName.ConcatTypeName()}.{item.ParamName}.g.cs", GetResource(item.Namespace, item.TypeName, item.FieldNames.Select(n => $"private readonly {item.ParamType} {n} = {item.ParamName};")));
-        }
+        context.AddSource("FaustVX.PrimaryParameter.SG.g.cs", string.Concat(parameters.Select(static item => GetResource(item.Namespace, item.TypeName, item.FieldNames.Select(n => $"private readonly {item.ParamType} {n} = {item.ParamName};")))));
     }
 
     static string GetResource(string nameSpace, ParentClass? parentClass, IEnumerable<string> inner)
@@ -189,11 +186,9 @@ internal class Generator : IIncrementalGenerator
                 .Append("partial ")
                 .Append(parentClass.Keyword) // e.g. class/struct/record
                 .Append(' ')
-                .Append(parentClass.Name) // e.g. Outer/Generic<T>
-                .Append(' ')
-                .AppendLine(parentClass.Constraints) // e.g. where T: new()
+                .AppendLine(parentClass.Name) // e.g. Outer/Generic<T>
                 .Append(new string(' ', 4 * parentsCount))
-                .AppendLine(@"{");
+                .AppendLine("{");
             parentClass = parentClass.Child; // repeat with the next child
         }
 
@@ -210,13 +205,13 @@ internal class Generator : IIncrementalGenerator
         {
             sb
                 .Append(new string(' ', 4 * parentsCount))
-                .AppendLine(@"}");
+                .AppendLine("}");
         }
 
         // Close the namespace, if we had one
         if (hasNamespace)
         {
-            sb.Append('}').AppendLine();
+            sb.AppendLine("}");
         }
 
         return sb.ToString();
