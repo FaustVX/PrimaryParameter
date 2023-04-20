@@ -22,7 +22,7 @@ record ParentClass(string Keyword, string Name, string Constraints, ParentClass?
         var parentClassInfo = CreateParentClass((TypeDeclarationSyntax)typeSyntax, null);
 
         // Keep looping while we're in a supported nested type
-        while (parentSyntax != null && parentSyntax.Kind() is SyntaxKind.ClassDeclaration or SyntaxKind.StructDeclaration or SyntaxKind.RecordDeclaration)
+        while (parentSyntax != null && parentSyntax.Kind() is SyntaxKind.ClassDeclaration or SyntaxKind.StructDeclaration)
         {
             // Record the parent type keyword (class/struct etc), name, and constraints
             parentClassInfo = CreateParentClass(parentSyntax, parentClassInfo);

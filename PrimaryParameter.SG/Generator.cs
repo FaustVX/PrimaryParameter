@@ -43,7 +43,7 @@ internal class Generator : IIncrementalGenerator
     }
 
     static bool IsSyntaxTargetForGeneration(SyntaxNode s, CancellationToken token)
-        => s is ParameterSyntax { AttributeLists.Count: > 0, Parent.Parent: BaseTypeDeclarationSyntax };
+        => s is ParameterSyntax { AttributeLists.Count: > 0, Parent.Parent: ClassDeclarationSyntax or StructDeclarationSyntax };
 
     static ParameterSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context, CancellationToken token)
     {

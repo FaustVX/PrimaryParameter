@@ -25,3 +25,11 @@ public partial class C([Field(Name = "_a"), Field(Name = "b"), Field]int i)
         Console.WriteLine(i);
     }
 }
+
+public partial record R([Field]int i)
+{
+    void M()
+    {
+        Console.WriteLine(_i);
+    }
+}
