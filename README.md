@@ -36,11 +36,32 @@ To eneble the feaure, type `[Field]` or `[Property]` before the primary paramete
 
 You can type as many attributes as you want on a single parameter.
 
-- `Field`: attribute have
-	- `Name`: property to modify the generated field name
-- `Property`: attribute have
-	- `Name`: property to modify the generated property name
-	- `WithInit`: to generate the `init` accessor along the `get`
+### Attribute Properties
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Property</th>
+    <th>Comments</th>
+    <th>Default value</th>
+  </tr>
+  <tr>
+    <td><code>Field</code></td>
+    <td><code>Name</code></td>
+    <td>property to modify the generated field name</td>
+    <td><code>_i</code> (for a parameter named <code>i</code>)</td>
+  </tr>
+  <tr>
+    <td rowspan="2"><code>Property</code></td>
+    <td><code>Name</code></td>
+    <td>property to modify the generated property name</td>
+    <td><code>I</code> (for a parameter named <code>i</code>)</td>
+  </tr>
+  <tr>
+    <td><code>WithInit</code></td>
+    <td>to generate the <code>init</code> accessor along the <code>get</code></td>
+    <td><code>false</code></td>
+  </tr>
+</table>
 
 ## Versions
 |Version|Date|Comments|
