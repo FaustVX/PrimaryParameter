@@ -38,36 +38,12 @@ To eneble the feaure, type `[Field]` or `[Property]` before the primary paramete
 You can type as many attributes as you want on a single parameter.
 
 ## Attribute Properties
-<table>
-  <tr>
-    <th>Attributes</th>
-    <th>Property</th>
-    <th>Comments</th>
-    <th>Default value</th>
-  </tr>
-  <tr>
-    <td><code>Field</code></td>
-    <td><code>Name</code></td>
-    <td>property to modify the generated field name</td>
-    <td><code>_i</code> (for a parameter named <code>i</code>)</td>
-  </tr>
-  <tr>
-    <td rowspan="3"><code>Property</code></td>
-    <td><code>Name</code></td>
-    <td>property to modify the generated property name</td>
-    <td><code>I</code> (for a parameter named <code>i</code>)</td>
-  </tr>
-  <tr>
-    <td><code>WithInit</code></td>
-    <td>to generate the <code>init</code> accessor along the <code>get</code></td>
-    <td><code>false</code></td>
-  </tr>
-  <tr>
-    <td><code>Scope</code></td>
-    <td>to change the scope of the generated property</td>
-    <td><code>private</code></td>
-  </tr>
-</table>
+|Attributes|Property|Comments|Default value|
+|----------|--------|--------|-------------|
+|`Field`|`Name`|Property to modify the generated field name|`_i` (for a parameter named `i`)|
+|`Property`|`Name`|Property to modify the generated field name|`I` (for a parameter named `i`)|
+||`WithInit`|To generate the `init` accessor along the `get`|`false`|
+||`Scope`|To change the scope of the generated property|`private`|
 
 ## Reported Diagnostics
 |Code|Title|Message|Severity|
