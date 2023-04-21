@@ -52,13 +52,15 @@ internal class Generator : IIncrementalGenerator
         var compilationAndParameters = context.CompilationProvider.Combine(paramDeclarations.Collect());
 
         // Generate the source using the compilation and parameters
-        context.RegisterSourceOutput(compilationAndParameters, static (spc, source) => Execute(source.Left, source.Right!, spc));
+        context.RegisterSourceOutput(compilationAndParameters, (spc, source) => Execute(source.Left, source.Right!, spc));
     }
 
-    static bool IsSyntaxTargetForGeneration(SyntaxNode s, CancellationToken token)
-        => s is ParameterSyntax { AttributeLists.Count: > 0, Parent.Parent: ClassDeclarationSyntax or StructDeclarationSyntax };
+    private readonly List<Diagnostic> _diagnostics = new();
 
-    static ParameterSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context, CancellationToken token)
+    static bool IsSyntaxTargetForGeneration(SyntaxNode s, CancellationToken token)
+        => s is ParameterSyntax { AttributeLists.Count: > 0 };
+
+    ParameterSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context, CancellationToken token)
     {
         // we know the node is a ParameterSyntax thanks to IsSyntaxTargetForGeneration
         var parameterSyntax = (ParameterSyntax)context.Node;
@@ -68,20 +70,25 @@ internal class Generator : IIncrementalGenerator
         {
             foreach (var attributeSyntax in attributeListSyntax.Attributes)
             {
-                if (context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol attributeSymbol)
+                if (context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol { ContainingType: var attributeContainingTypeSymbol })
                 {
                     // weird, we couldn't get the symbol, ignore it
                     continue;
                 }
 
-                var attributeContainingTypeSymbol = attributeSymbol.ContainingType;
                 var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
                 // Is the attribute the [Field] or [Property] attribute?
                 if (fullName is "PrimaryParameter.SG.FieldAttribute" or "PrimaryParameter.SG.PropertyAttribute")
                 {
-                    // return the parameter
-                    return parameterSyntax;
+
+                    if (parameterSyntax is not { Parent.Parent: ClassDeclarationSyntax or StructDeclarationSyntax })
+                    {
+                        _diagnostics.Add(Diagnostic.Create(Diagnostics.WarningOnNonPrimaryParameter, attributeSyntax.GetLocation()));
+                        return null;
+                    }
+                        // return the parameter
+                        return parameterSyntax;
                 }
             }
         }
@@ -90,8 +97,13 @@ internal class Generator : IIncrementalGenerator
         return null;
     }
 
-    static void Execute(Compilation compilation, ImmutableArray<ParameterSyntax> parameters, SourceProductionContext context)
+    void Execute(Compilation compilation, ImmutableArray<ParameterSyntax> parameters, SourceProductionContext context)
     {
+        foreach (var diagnostic in _diagnostics)
+        {
+            context.ReportDiagnostic(diagnostic);
+        }
+        _diagnostics.Clear();
         if (parameters.IsDefaultOrEmpty)
         {
             // nothing to do yet
@@ -145,11 +157,13 @@ internal class Generator : IIncrementalGenerator
             {
                 if (fieldAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
                 {
-                    memberNames.Add(new GenerateField(GetAttributeProperty<string>(attribute, "Name") ?? ("_" + paramSyntax.Identifier.Text)));
+                    if (!memberNames.Add(new GenerateField(GetAttributeProperty<string>(attribute, "Name") ?? ("_" + paramSyntax.Identifier.Text))))
+                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation()));
                 }
                 else if (propertyAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
                 {
-                    memberNames.Add(new GenerateProperty(GetAttributeProperty<string>(attribute, "Name") ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]), GetAttributeProperty<bool>(attribute, "WithInit"), GetAttributeProperty<string>(attribute, "Scope") ?? "private"));
+                    if (!memberNames.Add(new GenerateProperty(GetAttributeProperty<string>(attribute, "Name") ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]), GetAttributeProperty<bool>(attribute, "WithInit"), GetAttributeProperty<string>(attribute, "Scope") ?? "private")))
+                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation()));
                 }
                 else
                 {
@@ -180,9 +194,7 @@ internal class Generator : IIncrementalGenerator
     }
 
     static void GenerateFiles(IEnumerable<Parameter> parameters, SourceProductionContext context)
-    {
-        context.AddSource("FaustVX.PrimaryParameter.SG.g.cs", string.Concat(parameters.Select(static item => GetResource(item.Namespace, item.TypeName, item.FieldNames.Select(n => n.GenerateMember(item))))));
-    }
+        => context.AddSource("FaustVX.PrimaryParameter.SG.g.cs", string.Concat(parameters.Select(static item => GetResource(item.Namespace, item.TypeName, item.FieldNames.Select(n => n.GenerateMember(item))))));
 
     static string GetResource(string nameSpace, ParentClass? parentClass, IEnumerable<string> inner)
     {

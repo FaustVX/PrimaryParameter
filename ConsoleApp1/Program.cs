@@ -6,11 +6,11 @@ namespace ConsoleApp1
 
     static class Program
     {
-        static void Main()
+        static void Main([Field]string[] args)
         { }
     }
 
-    public partial class C([Field(Name = "_a"), Field(Name = "b"), Field] int i, [Property(WithInit = true, Scope = "public"), Field(Name = "s")] string s)
+    public partial class C([Field(Name = "_a"), Field(Name = "b"), Field, Field] int i, [Property(WithInit = true, Scope = "public"), Field(Name = "s")] string s)
     {
         public void M0()
         {
