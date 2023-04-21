@@ -151,19 +151,29 @@ internal class Generator : IIncrementalGenerator
 
             var containingType = (BaseTypeDeclarationSyntax)((ParameterListSyntax)paramSyntax.Parent!).Parent!;
 
+            var semanticType = semanticModel.GetDeclaredSymbol(containingType)!;
+
             var memberNames = new HashSet<IGeneratedMember>();
 
             foreach (var attribute in paramSymbol.GetAttributes())
             {
                 if (fieldAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
                 {
-                    if (!memberNames.Add(new GenerateField(GetAttributeProperty<string>(attribute, "Name") ?? ("_" + paramSyntax.Identifier.Text))))
-                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation()));
+                    var name = GetAttributeProperty<string>(attribute, "Name") ?? ("_" + paramSyntax.Identifier.Text);
+                    if (semanticType.MemberNames.Contains(name))
+                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation(), effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
+                    else if (!memberNames.Add(new GenerateField(name)))
+                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation(), name));
                 }
                 else if (propertyAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
                 {
-                    if (!memberNames.Add(new GenerateProperty(GetAttributeProperty<string>(attribute, "Name") ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]), GetAttributeProperty<bool>(attribute, "WithInit"), GetAttributeProperty<string>(attribute, "Scope") ?? "private")))
-                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation()));
+                    var name = GetAttributeProperty<string>(attribute, "Name") ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]);
+                    var withInit = GetAttributeProperty<bool>(attribute, "WithInit");
+                    var scope = GetAttributeProperty<string>(attribute, "Scope") ?? "private";
+                    if (semanticType.MemberNames.Contains(name))
+                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation(), effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
+                    else if (!memberNames.Add(new GenerateProperty(name, withInit, scope)))
+                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation(), name));
                 }
                 else
                 {

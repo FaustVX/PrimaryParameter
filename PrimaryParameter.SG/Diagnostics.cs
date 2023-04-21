@@ -23,7 +23,7 @@ static class Diagnostics
     public static readonly DiagnosticDescriptor WarningOnUsedMember = new(
         id: "PC03",
         title: "Attribute generate nothing",
-        messageFormat: "This field's name is already used",
+        messageFormat: "This member's name ('{0}') is already used",
         category: "tests",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true);
