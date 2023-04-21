@@ -69,6 +69,13 @@ You can type as many attributes as you want on a single parameter.
   </tr>
 </table>
 
+## Reported Diagnostics
+|Code|Title|Message|Severity|
+|----|-----|-------|--------|
+|`PC01`|Accessing a Primary Parameter|Can't access a primary parameter ('{0}') with a [Field] or [Property] attribute, use {1}|`Error`|
+|`PC02`|Attribute generate nothing|Use this attributes only on primary parameter|`Warning`|
+|`PC03`|Attribute generate nothing|This member's name ('{0}') is already used|`Warning`</br>`Error` when a member's name is already used in the type|
+
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
