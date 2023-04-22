@@ -55,7 +55,7 @@ You can type as many attributes as you want on a single parameter.
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
-|v0.4.0|22/04/2023|Added `PC02` and `PC03` warni/errors|
+|v0.4.0|22/04/2023|Added `PC02` and `PC03` warnings/errors|
 |v0.3.1|21/04/2023|Added `Scope` property on `Property` attribute</br>Attributes are `internal`|
 |v0.3.0|20/04/2023|Added `Property` attribute|
 |v0.2.0|20/04/2023|Support for `Name` fields and multiple `Field`|
