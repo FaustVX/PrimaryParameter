@@ -2,6 +2,7 @@
 
 namespace PrimaryParameter.SG;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("MicrosoftCodeAnalysisReleaseTracking", "RS2008:Enable analyzer release tracking")]
 static class Diagnostics
 {
     public static readonly DiagnosticDescriptor ErrorWhenAccessingPrimaryParameter = new(
