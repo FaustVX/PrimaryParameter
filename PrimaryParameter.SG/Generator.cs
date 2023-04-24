@@ -167,17 +167,17 @@ internal class Generator : IIncrementalGenerator
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? ("_" + paramSyntax.Identifier.Text);
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateField(name)))
+                        else if (!memberNames.Add(new GenerateField(name, nameLocation)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
                     {
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]);
                         var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _);
-                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
+                        var scope = GetAttributeProperty<string>(operation, "Scope", out var scopeLocation) ?? "private";
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateProperty(name, withInit, scope)))
+                        else if (!memberNames.Add(new GenerateProperty(name, nameLocation, withInit, scope, scopeLocation)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                 }
@@ -213,7 +213,8 @@ internal class Generator : IIncrementalGenerator
 
     static string GetResource(string nameSpace, ParentClass? parentClass, IEnumerable<string> inner)
     {
-        var sb = new StringBuilder();
+        var sb = new StringBuilder()
+            .AppendLine("#line hidden");
         var parentsCount = 0;
 
         // If we don't have a namespace, generate the code in the "default"
@@ -248,7 +249,6 @@ internal class Generator : IIncrementalGenerator
         foreach (var item in inner)
         {
             // Write the actual target generation code here
-            sb.Append(new string(' ', 4 * (parentsCount + 1)));
             sb.AppendLine(item);
         }
 
