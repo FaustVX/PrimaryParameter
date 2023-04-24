@@ -9,13 +9,14 @@ namespace ConsoleApp1
         static void Main([Field]string[] args)
         { }
     }
-
+#if SHOW_ERRORS
     partial class C
     {
         private readonly int _a;
     }
+#endif
 
-    public partial class C([Field(Name = "_a"), Field(Name = "b"), Field, Field] int i, [Property(WithInit = true, Scope = "public"), Field(Name = "s")] string s)
+    public partial class C([Field(Name = "_" + "a"), Field(Name = nameof(C.b)), Field, Field] int i, [Property(WithInit = true, Scope = "public"), Field(Name = nameof(C.s))] string s)
     {
         public void M0()
         {

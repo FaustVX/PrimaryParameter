@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Operations;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -143,7 +144,7 @@ internal class Generator : IIncrementalGenerator
 
             // Get the semantic representation of the parameter syntax
             var semanticModel = compilation.GetSemanticModel(paramSyntax.SyntaxTree);
-            if (semanticModel.GetDeclaredSymbol(paramSyntax) is not ISymbol paramSymbol)
+            if (semanticModel.GetDeclaredSymbol(paramSyntax) is not ISymbol)
             {
                 // something went wrong, bail out
                 continue;
@@ -155,32 +156,31 @@ internal class Generator : IIncrementalGenerator
 
             var memberNames = new HashSet<IGeneratedMember>();
 
-            foreach (var attribute in paramSymbol.GetAttributes())
+            foreach (var list in paramSyntax.AttributeLists)
             {
-                if (fieldAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
+                foreach (var attribute in list.Attributes)
                 {
-                    var name = GetAttributeProperty<string>(attribute, "Name") ?? ("_" + paramSyntax.Identifier.Text);
-                    if (semanticType.MemberNames.Contains(name))
-                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation(), effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                    else if (!memberNames.Add(new GenerateField(name)))
-                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation(), name));
+                    var operation = (IAttributeOperation)semanticModel.GetOperation(attribute)!;
+                    var objectCreationOperation = (IObjectCreationOperation)operation.Operation!;
+                    if (fieldAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
+                    {
+                        var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? ("_" + paramSyntax.Identifier.Text);
+                        if (semanticType.MemberNames.Contains(name))
+                            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
+                        else if (!memberNames.Add(new GenerateField(name)))
+                            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
+                    }
+                    else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
+                    {
+                        var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]);
+                        var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _);
+                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
+                        if (semanticType.MemberNames.Contains(name))
+                            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
+                        else if (!memberNames.Add(new GenerateProperty(name, withInit, scope)))
+                            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
+                    }
                 }
-                else if (propertyAttributeSymbol.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
-                {
-                    var name = GetAttributeProperty<string>(attribute, "Name") ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]);
-                    var withInit = GetAttributeProperty<bool>(attribute, "WithInit");
-                    var scope = GetAttributeProperty<string>(attribute, "Scope") ?? "private";
-                    if (semanticType.MemberNames.Contains(name))
-                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation(), effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                    else if (!memberNames.Add(new GenerateProperty(name, withInit, scope)))
-                        context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, attribute.ApplicationSyntaxReference!.GetSyntax().GetLocation(), name));
-                }
-                else
-                {
-                    // This isn't the [Field] nor [Property] attribute
-                    continue;
-                }
-
             }
             var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), memberNames.ToArray());
             yield return parameter;
@@ -188,18 +188,23 @@ internal class Generator : IIncrementalGenerator
         }
     }
 
-    static T? GetAttributeProperty<T>(AttributeData attributeData, string propertyName)
+    static T? GetAttributeProperty<T>(IAttributeOperation attributeData, string propertyName, out Location? location)
     {
         // This is the attribute, check all of the named arguments
-        foreach (var namedArgument in attributeData.NamedArguments)
+        var objectCreation = (IObjectCreationOperation)attributeData.Operation;
+#pragma warning disable IDE0220 // Add explicit cast
+        foreach (IAssignmentOperation namedArgument in objectCreation.Initializer?.Initializers ?? Enumerable.Empty<IOperation>())
+#pragma warning restore IDE0220 // Add explicit cast
         {
             // Is this the Name argument?
-            if (namedArgument.Key == propertyName && namedArgument.Value.Value is T n)
+            if (((IPropertyReferenceOperation)namedArgument.Target).Property.Name == propertyName && namedArgument.Value.ConstantValue is { HasValue: true, Value: T n})
             {
+                location = namedArgument.Value.Syntax.GetLocation();
                 return n;
             }
         }
 
+        location = null;
         return default;
     }
 
