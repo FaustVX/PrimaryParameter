@@ -3,43 +3,48 @@
 [![Update NuGet](https://github.com/FaustVX/PrimaryParameter/actions/workflows/pushToNuget.yaml/badge.svg)](https://github.com/FaustVX/PrimaryParameter/actions/workflows/pushToNuget.yaml)
 
 ## Description
-Using a `Field` or `Property` attributes on parameters.
+Using a `Field` or `Property` attribute on parameters.
 
-Automaticaly generate `private readonly` fields or `private` property.
+Automaticaly generate `private readonly` fields or `private` properties.
 
 Forbid the use of primary constructor's parameters.
 
 ## Usage
 
 ```cs
-partial class C([Field(Name = "_a"), Field, [Property(WithInit = true)]]int i) // type must be partial, but can be class / struct
+partial class C([Field(Name = "_a"), [Field(Name = nameof(C._b))], Field, [Property(WithInit = true)]]int i) // type must be partial, but can be class / struct
 {
-	// private readonly int _a = i; // generated field
-	// private readonly int _i = i; // generated field
-	// private int { get; init; } = i; // generated Property
+# region Generated members
+    // private readonly int _a = i;     // generated field
+    // private readonly int _b = i;     // generated field (with computed name)
+    // private readonly int _i = i;     // generated field
+    // private int { get; init; } = i;  // generated Property
+# endregion
+
     public void M0()
     {
         i++;                    // error on usage of i
         Console.WriteLine(i);   // error on usage of i
     }
+
     public void M1()
     {
         var i = 0;
         i++;                    // don't error on usage of locals
         Console.WriteLine(_i);  // automaticaly created readonly field
-        Console.WriteLine(_a);	// automaticaly created readonly field based on Name property
-        Console.WriteLine(I);  // automaticaly created readonly property
+        Console.WriteLine(_a);  // automaticaly created readonly field based on Name property
+        Console.WriteLine(I);   // automaticaly created readonly property
     }
 }
 ```
 
-To eneble the feaure, type `[Field]` or `[Property]` before the primary parameter you want.
+To enable the feaure, type `[Field]` or `[Property]` before the primary parameter you want.
 
 You can type as many attributes as you want on a single parameter.
 
 ## Attribute Properties
-|Attributes|Property|Comments|Default value|
-|----------|--------|--------|-------------|
+|Attribute|Property|Comments|Default value|
+|---------|--------|--------|-------------|
 |`Field`|`Name`|Property to modify the generated field name|`_i` (for a parameter named `i`)|
 |`Property`|`Name`|Property to modify the generated field name|`I` (for a parameter named `i`)|
 ||`WithInit`|To generate the `init` accessor along the `get`|`false`|
