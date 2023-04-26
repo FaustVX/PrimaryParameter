@@ -165,6 +165,7 @@ internal class Generator : IIncrementalGenerator
                     if (fieldAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
                     {
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? ("_" + paramSyntax.Identifier.Text);
+                        nameLocation ??= attribute.GetLocation();
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
                         else if (!memberNames.Add(new GenerateField(name)))
@@ -173,6 +174,7 @@ internal class Generator : IIncrementalGenerator
                     else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
                     {
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]);
+                        nameLocation ??= attribute.GetLocation();
                         var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _);
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
                         if (semanticType.MemberNames.Contains(name))
