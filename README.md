@@ -60,6 +60,7 @@ You can type as many attributes as you want on a single parameter.
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v0.4.2|26/04/2023|bug-fix with previous update|
 |v0.4.1|25/04/2023|More precise warnings/errors location|
 |v0.4.0|22/04/2023|Added `PC02` and `PC03` warnings/errors|
 |v0.3.1|21/04/2023|Added `Scope` property on `Property` attribute</br>Attributes are `internal`|
