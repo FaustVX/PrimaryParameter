@@ -20,6 +20,7 @@ internal class Generator : IIncrementalGenerator
         context.RegisterPostInitializationOutput(ctx =>
         {
             ctx.AddSource("FieldAttribute.g.cs", """
+                using global::System;
                 namespace PrimaryParameter.SG
                 {
                     [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = true)]
@@ -30,6 +31,7 @@ internal class Generator : IIncrementalGenerator
                 }
                 """);
             ctx.AddSource("PropertyAttribute.g.cs", """
+                using global::System;
                 namespace PrimaryParameter.SG
                 {
                     [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = true)]

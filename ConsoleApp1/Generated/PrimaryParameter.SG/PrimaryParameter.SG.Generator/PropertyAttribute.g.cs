@@ -1,4 +1,5 @@
-﻿namespace PrimaryParameter.SG
+﻿using global::System;
+namespace PrimaryParameter.SG
 {
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = true)]
     sealed class PropertyAttribute : Attribute
