@@ -12,7 +12,7 @@ Forbid the use of primary constructor's parameters.
 ## Usage
 
 ```cs
-partial class C([Field(Name = "_a", AssignFormat = "{0}.ToString()", Type = typeof(string)), [Field(Name = nameof(C._b))], Field, [Property(WithInit = true)]]int i) // type must be partial, but can be class / struct
+partial class C([Field(Name = "_a", AssignFormat = "{0}.ToString()", Type = typeof(string)), Field(Name = nameof(C._b)), Field, Property(WithInit = true)]int i) // type must be partial, but can be class / struct
 {
 # region Generated members
     // private readonly string _a = i.ToString();   // generated field (with type and formated assignment)

@@ -16,8 +16,10 @@ internal class Generator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+#if DEBUG
         //if (!System.Diagnostics.Debugger.IsAttached)
         //    System.Diagnostics.Debugger.Launch();
+#endif
         context.RegisterPostInitializationOutput(ctx =>
         {
             ctx.AddSource("FieldAttribute.g.cs", """
