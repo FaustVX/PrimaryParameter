@@ -16,7 +16,8 @@ internal class Generator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        //System.Diagnostics.Debugger.Launch();
+        //if (!System.Diagnostics.Debugger.IsAttached)
+        //    System.Diagnostics.Debugger.Launch();
         context.RegisterPostInitializationOutput(ctx =>
         {
             ctx.AddSource("FieldAttribute.g.cs", """
@@ -27,6 +28,7 @@ internal class Generator : IIncrementalGenerator
                     sealed class FieldAttribute : Attribute
                     {
                         public string Name { get; init; }
+                        public string AssignFormat { get; init; }
                     }
                 }
                 """);
@@ -38,6 +40,7 @@ internal class Generator : IIncrementalGenerator
                     sealed class PropertyAttribute : Attribute
                     {
                         public string Name { get; init; }
+                        public string AssignFormat { get; init; }
                         public bool WithInit { get; init; }
                         public string Scope { get; init; }
                     }
@@ -168,20 +171,22 @@ internal class Generator : IIncrementalGenerator
                     {
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? ("_" + paramSyntax.Identifier.Text);
                         nameLocation ??= attribute.GetLocation();
+                        var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateField(name)))
+                        else if (!memberNames.Add(new GenerateField(name, format)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
                     {
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]);
                         nameLocation ??= attribute.GetLocation();
+                        var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
                         var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _);
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateProperty(name, withInit, scope)))
+                        else if (!memberNames.Add(new GenerateProperty(name, withInit, scope, format)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                 }

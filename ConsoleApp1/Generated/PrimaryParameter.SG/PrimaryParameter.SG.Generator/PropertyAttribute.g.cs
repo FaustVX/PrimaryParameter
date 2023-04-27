@@ -5,6 +5,7 @@ namespace PrimaryParameter.SG
     sealed class PropertyAttribute : Attribute
     {
         public string Name { get; init; }
+        public string AssignFormat { get; init; }
         public bool WithInit { get; init; }
         public string Scope { get; init; }
     }

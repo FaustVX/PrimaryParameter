@@ -9,14 +9,14 @@ interface IGeneratedMember
     string GenerateMember(Parameter param);
 }
 
-record GenerateField(string Name) : IGeneratedMember
+record GenerateField(string Name, string AssignFormat) : IGeneratedMember
 {
     public string GenerateMember(Parameter param)
-        => $"private readonly {param.ParamType} {Name} = {param.ParamName};";
+        => $"private readonly {param.ParamType} {Name} = {string.Format(AssignFormat, param.ParamName)};";
 }
 
-record GenerateProperty(string Name, bool WithInit, string Scope) : IGeneratedMember
+record GenerateProperty(string Name, bool WithInit, string Scope, string AssignFormat) : IGeneratedMember
 {
     public string GenerateMember(Parameter param)
-        => $$"""{{Scope}} {{param.ParamType}} {{Name}} { get; {{(WithInit ? "init; " : "")}}} = {{param.ParamName}};""";
+        => $$"""{{Scope}} {{param.ParamType}} {{Name}} { get; {{(WithInit ? "init; " : "")}}} = {{string.Format(AssignFormat, param.ParamName)}};""";
 }

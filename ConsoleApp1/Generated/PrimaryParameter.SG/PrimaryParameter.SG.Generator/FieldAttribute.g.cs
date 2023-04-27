@@ -5,5 +5,6 @@ namespace PrimaryParameter.SG
     sealed class FieldAttribute : Attribute
     {
         public string Name { get; init; }
+        public string AssignFormat { get; init; }
     }
 }
