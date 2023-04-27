@@ -29,6 +29,7 @@ internal class Generator : IIncrementalGenerator
                     {
                         public string Name { get; init; }
                         public string AssignFormat { get; init; }
+                        public Type Type { get; init; }
                     }
                 }
                 """);
@@ -41,6 +42,7 @@ internal class Generator : IIncrementalGenerator
                     {
                         public string Name { get; init; }
                         public string AssignFormat { get; init; }
+                        public Type Type { get; init; }
                         public bool WithInit { get; init; }
                         public string Scope { get; init; }
                     }
@@ -172,9 +174,10 @@ internal class Generator : IIncrementalGenerator
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? ("_" + paramSyntax.Identifier.Text);
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
+                        var type = GetAttributePropertyTypeOf(operation, "Type", out _);
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateField(name, format)))
+                        else if (!memberNames.Add(new GenerateField(name, format, type)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
@@ -182,11 +185,12 @@ internal class Generator : IIncrementalGenerator
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]);
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
+                        var type = GetAttributePropertyTypeOf(operation, "Type", out _);
                         var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _);
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateProperty(name, withInit, scope, format)))
+                        else if (!memberNames.Add(new GenerateProperty(name, withInit, scope, format, type)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                 }
@@ -206,10 +210,30 @@ internal class Generator : IIncrementalGenerator
 #pragma warning restore IDE0220 // Add explicit cast
         {
             // Is this the Name argument?
-            if (((IPropertyReferenceOperation)namedArgument.Target).Property.Name == propertyName && namedArgument.Value.ConstantValue is { HasValue: true, Value: T n})
+            if (((IPropertyReferenceOperation)namedArgument.Target).Property.Name == propertyName && namedArgument.Value.ConstantValue is { HasValue: true, Value: T n })
             {
                 location = namedArgument.Value.Syntax.GetLocation();
                 return n;
+            }
+        }
+
+        location = null;
+        return default;
+    }
+
+    static string? GetAttributePropertyTypeOf(IAttributeOperation attributeData, string propertyName, out Location? location)
+    {
+        // This is the attribute, check all of the named arguments
+        var objectCreation = (IObjectCreationOperation)attributeData.Operation;
+#pragma warning disable IDE0220 // Add explicit cast
+        foreach (IAssignmentOperation namedArgument in objectCreation.Initializer?.Initializers ?? Enumerable.Empty<IOperation>())
+#pragma warning restore IDE0220 // Add explicit cast
+        {
+            // Is this the Name argument?
+            if (((IPropertyReferenceOperation)namedArgument.Target).Property.Name == propertyName && namedArgument.Value is ITypeOfOperation { TypeOperand: var type })
+            {
+                location = namedArgument.Value.Syntax.GetLocation();
+                return type.ToDisplayString();
             }
         }
 
