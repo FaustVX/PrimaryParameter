@@ -2,7 +2,7 @@
 {
     partial class C
     {
-        private readonly string _a = i.ToString();
+        private string _a = i.ToString();
         private readonly int b = i;
         private readonly int _i = i;
     }

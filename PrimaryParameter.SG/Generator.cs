@@ -32,6 +32,7 @@ internal class Generator : IIncrementalGenerator
                         public string Name { get; init; }
                         public string AssignFormat { get; init; }
                         public Type Type { get; init; }
+                        public bool IsReadonly { get; init; }
                         public string Scope { get; init; }
                     }
                 }
@@ -178,10 +179,11 @@ internal class Generator : IIncrementalGenerator
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
                         var type = GetAttributePropertyTypeOf(operation, "Type", out _);
+                        var isReadonly = GetAttributeProperty<bool>(operation, "IsReadonly", out _, defaultValue: true);
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateField(name, scope, format, type)))
+                        else if (!memberNames.Add(new GenerateField(name, isReadonly, scope, format, type)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
@@ -223,6 +225,26 @@ internal class Generator : IIncrementalGenerator
 
         location = null;
         return default;
+    }
+
+    static T? GetAttributeProperty<T>(IAttributeOperation attributeData, string propertyName, out Location? location, T? defaultValue)
+    {
+        // This is the attribute, check all of the named arguments
+        var objectCreation = (IObjectCreationOperation)attributeData.Operation;
+#pragma warning disable IDE0220 // Add explicit cast
+        foreach (IAssignmentOperation namedArgument in objectCreation.Initializer?.Initializers ?? Enumerable.Empty<IOperation>())
+#pragma warning restore IDE0220 // Add explicit cast
+        {
+            // Is this the Name argument?
+            if (((IPropertyReferenceOperation)namedArgument.Target).Property.Name == propertyName && namedArgument.Value.ConstantValue is { HasValue: true, Value: T n })
+            {
+                location = namedArgument.Value.Syntax.GetLocation();
+                return n;
+            }
+        }
+
+        location = null;
+        return defaultValue;
     }
 
     static string? GetAttributePropertyTypeOf(IAttributeOperation attributeData, string propertyName, out Location? location)

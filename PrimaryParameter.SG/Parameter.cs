@@ -9,10 +9,10 @@ interface IGeneratedMember
     string GenerateMember(Parameter param);
 }
 
-record GenerateField(string Name, string Scope, string AssignFormat, string? Type) : IGeneratedMember
+record GenerateField(string Name, bool IsReadonly, string Scope, string AssignFormat, string? Type) : IGeneratedMember
 {
     public string GenerateMember(Parameter param)
-        => $"{Scope} readonly {Type ?? param.ParamType} {Name} = {string.Format(AssignFormat, param.ParamName)};";
+        => $"{Scope}{(IsReadonly ? " readonly " : " ")}{Type ?? param.ParamType} {Name} = {string.Format(AssignFormat, param.ParamName)};";
 }
 
 record GenerateProperty(string Name, bool WithInit, string Scope, string AssignFormat, string? Type) : IGeneratedMember

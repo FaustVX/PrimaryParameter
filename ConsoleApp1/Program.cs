@@ -16,7 +16,7 @@ namespace ConsoleApp1
     }
 #endif
 
-    public partial class C([Field(Name = "_" + "a", AssignFormat = "{0}.ToString()", Type = typeof(string)), Field(Name = nameof(C.b)), Field, Field] int i, [Property(WithInit = true, AssignFormat = "{0}.Trim()"), Field(Name = nameof(C.s))] string s)
+    public partial class C([Field(Name = "_" + "a", AssignFormat = "{0}.ToString()", Type = typeof(string), IsReadonly = false), Field(Name = nameof(C.b)), Field, Field] int i, [Property(WithInit = true, AssignFormat = "{0}.Trim()"), Field(Name = nameof(C.s))] string s)
     {
         public void M0()
         {
@@ -28,6 +28,7 @@ namespace ConsoleApp1
             Console.WriteLine(_i);
             Console.WriteLine(S);
             Console.WriteLine(s);
+            _a = "";
         }
 #if SHOW_ERRORS
         public void M1()
