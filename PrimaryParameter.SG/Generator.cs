@@ -32,6 +32,7 @@ internal class Generator : IIncrementalGenerator
                         public string Name { get; init; }
                         public string AssignFormat { get; init; }
                         public Type Type { get; init; }
+                        public string Scope { get; init; }
                     }
                 }
                 """);
@@ -177,9 +178,10 @@ internal class Generator : IIncrementalGenerator
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
                         var type = GetAttributePropertyTypeOf(operation, "Type", out _);
+                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateField(name, format, type)))
+                        else if (!memberNames.Add(new GenerateField(name, scope, format, type)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
@@ -189,7 +191,7 @@ internal class Generator : IIncrementalGenerator
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
                         var type = GetAttributePropertyTypeOf(operation, "Type", out _);
                         var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _);
-                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
+                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "public";
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
                         else if (!memberNames.Add(new GenerateProperty(name, withInit, scope, format, type)))

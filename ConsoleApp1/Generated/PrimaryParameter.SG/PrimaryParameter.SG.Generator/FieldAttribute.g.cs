@@ -7,5 +7,6 @@ namespace PrimaryParameter.SG
         public string Name { get; init; }
         public string AssignFormat { get; init; }
         public Type Type { get; init; }
+        public string Scope { get; init; }
     }
 }
