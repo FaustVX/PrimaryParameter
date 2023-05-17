@@ -46,11 +46,13 @@ You can type as many attributes as you want on a single parameter.
 |Attribute|Property|Comments|Default value|
 |---------|--------|--------|-------------|
 |`Field`|`Name`|Property to modify the generated field name|`_i` (for a parameter named `i`)|
+||`IsReadnoly`|To generate the `readonly` modifier|`true`|
+||`Scope`|To change the scope of the generated property|`private`|
 ||`AssignFormat`|To change the assignment for that field|`{0}`|
 ||`Type`|To change the type for that field|same type as parameter|
 |`Property`|`Name`|Property to modify the generated field name|`I` (for a parameter named `i`)|
 ||`WithInit`|To generate the `init` accessor along the `get`|`false`|
-||`Scope`|To change the scope of the generated property|`private`|
+||`Scope`|To change the scope of the generated property|`public`|
 ||`AssignFormat`|To change the assignment for that property|`{0}`|
 ||`Type`|To change the type for that property|same type as parameter|
 
@@ -64,6 +66,7 @@ You can type as many attributes as you want on a single parameter.
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v0.4.5|18/05/2023|Added `Scope` and `IsReadonly` properties on `Field`</br>`Scope` property on `Property` defaulted to `public`|
 |v0.4.4|28/04/2023|Added `AssignFormat` and `Type` properties|
 |v0.4.3|27/04/2023|`Field` and `Property` now have `using global::System`|
 |v0.4.2|26/04/2023|Bug-fix with previous update|

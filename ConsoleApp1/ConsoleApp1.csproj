@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(Configuration)'=='Release' ">
-    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="0.4.4" />
+    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="0.4.5" />
   </ItemGroup>
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
