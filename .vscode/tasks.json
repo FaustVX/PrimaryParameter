@@ -1,0 +1,63 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "-tl",
+                "${workspaceFolder}/ConsoleApp1/ConsoleApp1.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
+                    "running": {
+                        "label": "building"
+                    }
+                }
+            }
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/ConsoleApp1/ConsoleApp1.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
+                    "running": {
+                        "label": "publising"
+                    }
+                }
+            }
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/ConsoleApp1/ConsoleApp1.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
+                    "running": {
+                        "label": "watching"
+                    }
+                }
+            }
+        }
+    ]
+}
