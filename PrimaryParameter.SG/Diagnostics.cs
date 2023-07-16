@@ -28,4 +28,20 @@ static class Diagnostics
         category: "tests",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true);
+
+    public static readonly DiagnosticDescriptor ErrorWhenRefFieldInNonRefStruct = new(
+        id: "PC04",
+        title: "RefField in non ref struct",
+        messageFormat: "Can't apply [RefField] in non ref struct '{0}'",
+        category: "tests",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
+    public static readonly DiagnosticDescriptor ErrorWhenRefFieldOnNonRefParam = new(
+        id: "PC05",
+        title: "RefField on non ref parameter",
+        messageFormat: "Can't apply [RefField] on non ref parameter '{0}'",
+        category: "tests",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
 }

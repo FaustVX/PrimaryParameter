@@ -104,7 +104,7 @@ internal class Generator : IIncrementalGenerator
 
                 var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
-                // Is the attribute the [Field] or [Property] attribute?
+                // Is the attribute the [Field] or [RefField] or [Property] attribute?
                 if (fullName is "PrimaryParameter.SG.FieldAttribute" or "PrimaryParameter.SG.RefFieldAttribute" or "PrimaryParameter.SG.PropertyAttribute")
                 {
                     if (parameterSyntax is not { Parent.Parent: ClassDeclarationSyntax or StructDeclarationSyntax })
@@ -112,8 +112,23 @@ internal class Generator : IIncrementalGenerator
                         _diagnostics.Add(Diagnostic.Create(Diagnostics.WarningOnNonPrimaryParameter, attributeSyntax.GetLocation()));
                         return null;
                     }
-                    // return the parameter
-                    return parameterSyntax;
+                    var hasDiagnostics = false;
+                    if (fullName is "PrimaryParameter.SG.RefFieldAttribute" && !(parameterSyntax is { Parent.Parent: StructDeclarationSyntax { Modifiers: var typeModifiers } } && typeModifiers.Any(static mod => mod.IsKind(SyntaxKind.RefKeyword))))
+                    {
+                        _diagnostics.Add(Diagnostic.Create(Diagnostics.ErrorWhenRefFieldInNonRefStruct, attributeSyntax.GetLocation(), ((BaseTypeDeclarationSyntax)parameterSyntax.Parent.Parent).Identifier.Text));
+                        hasDiagnostics = true;
+                    }
+                    if (fullName is "PrimaryParameter.SG.RefFieldAttribute" && !(parameterSyntax is { Modifiers: var paramModifiers } && paramModifiers.Any(static mod => mod.IsKind(SyntaxKind.RefKeyword))))
+                    {
+                        _diagnostics.Add(Diagnostic.Create(Diagnostics.ErrorWhenRefFieldOnNonRefParam, attributeSyntax.GetLocation(), parameterSyntax.Identifier.Text));
+                        hasDiagnostics = true;
+                    }
+
+                    if (hasDiagnostics)
+                        return null;
+                    else
+                        // return the parameter
+                        return parameterSyntax;
                 }
             }
         }
