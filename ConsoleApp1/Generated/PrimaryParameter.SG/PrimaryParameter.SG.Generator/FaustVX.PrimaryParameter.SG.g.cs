@@ -3,7 +3,7 @@
     partial class C
     {
         private string _a = i.ToString();
-        private readonly int b = i;
+        public int B = i;
         private readonly int _i = i;
     }
 }
@@ -23,5 +23,12 @@ namespace ConsoleApp1
         {
             private readonly T _s = s;
         }
+    }
+}
+namespace ConsoleApp1
+{
+    partial struct Ref
+    {
+        private readonly ref int Abc = ref global::System.Runtime.CompilerServices.Unsafe.AsRef(in i);
     }
 }

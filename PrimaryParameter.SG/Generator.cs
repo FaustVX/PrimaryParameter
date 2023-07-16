@@ -37,6 +37,20 @@ internal class Generator : IIncrementalGenerator
                     }
                 }
                 """);
+            ctx.AddSource("RefFieldAttribute.g.cs", """
+                using global::System;
+                namespace PrimaryParameter.SG
+                {
+                    [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = true)]
+                    sealed class RefFieldAttribute : Attribute
+                    {
+                        public string Name { get; init; }
+                        public string Scope { get; init; }
+                        public bool IsReadonlyRef { get; init; }
+                        public bool IsRefReadonly { get; init; }
+                    }
+                }
+                """);
             ctx.AddSource("PropertyAttribute.g.cs", """
                 using global::System;
                 namespace PrimaryParameter.SG
@@ -91,16 +105,15 @@ internal class Generator : IIncrementalGenerator
                 var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
                 // Is the attribute the [Field] or [Property] attribute?
-                if (fullName is "PrimaryParameter.SG.FieldAttribute" or "PrimaryParameter.SG.PropertyAttribute")
+                if (fullName is "PrimaryParameter.SG.FieldAttribute" or "PrimaryParameter.SG.RefFieldAttribute" or "PrimaryParameter.SG.PropertyAttribute")
                 {
-
                     if (parameterSyntax is not { Parent.Parent: ClassDeclarationSyntax or StructDeclarationSyntax })
                     {
                         _diagnostics.Add(Diagnostic.Create(Diagnostics.WarningOnNonPrimaryParameter, attributeSyntax.GetLocation()));
                         return null;
                     }
-                        // return the parameter
-                        return parameterSyntax;
+                    // return the parameter
+                    return parameterSyntax;
                 }
             }
         }
@@ -135,13 +148,11 @@ internal class Generator : IIncrementalGenerator
 
     static IEnumerable<Parameter> GetTypesToGenerate(Compilation compilation, IEnumerable<ParameterSyntax> parameters, SourceProductionContext context)
     {
-        if (compilation.GetTypeByMetadataName("PrimaryParameter.SG.FieldAttribute") is not INamedTypeSymbol fieldAttributeSymbol)
-        {
-            // If this is null, the compilation couldn't find the marker attribute type
-            // which suggests there's something very wrong! Bail out..
-            yield break;
-        }
-        if (compilation.GetTypeByMetadataName("PrimaryParameter.SG.PropertyAttribute") is not INamedTypeSymbol propertyAttributeSymbol)
+        if ((compilation.GetTypeByMetadataName("PrimaryParameter.SG.FieldAttribute"),
+            compilation.GetTypeByMetadataName("PrimaryParameter.SG.RefFieldAttribute"),
+            compilation.GetTypeByMetadataName("PrimaryParameter.SG.PropertyAttribute")) is not (INamedTypeSymbol fieldAttributeSymbol,
+            INamedTypeSymbol refFieldAttributeSymbol,
+            INamedTypeSymbol propertyAttributeSymbol))
         {
             // If this is null, the compilation couldn't find the marker attribute type
             // which suggests there's something very wrong! Bail out..
@@ -184,6 +195,18 @@ internal class Generator : IIncrementalGenerator
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
                         else if (!memberNames.Add(new GenerateField(name, isReadonly, scope, format, type)))
+                            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
+                    }
+                    if (refFieldAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
+                    {
+                        var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? ("_" + paramSyntax.Identifier.Text);
+                        nameLocation ??= attribute.GetLocation();
+                        var isReadonlyRef = GetAttributeProperty<bool>(operation, "IsReadonlyRef", out _, defaultValue: true);
+                        var isRefReadonly = GetAttributeProperty<bool>(operation, "IsRefReadonly", out _, defaultValue: true);
+                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
+                        if (semanticType.MemberNames.Contains(name))
+                            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
+                        else if (!memberNames.Add(new GenerateRefField(name, isReadonlyRef, isRefReadonly, scope)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
