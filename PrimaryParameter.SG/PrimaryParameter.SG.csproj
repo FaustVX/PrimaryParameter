@@ -25,7 +25,7 @@
 
   <PropertyGroup>
     <PackageId>FaustVX.PrimaryParameter.SG</PackageId>
-    <Version>0.4.5</Version>
+    <Version>0.4.6</Version>
     <Authors>FaustVX</Authors>
     <RepositoryUrl>https://github.com/FaustVX/PrimaryParameter</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

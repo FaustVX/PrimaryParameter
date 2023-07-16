@@ -25,7 +25,7 @@ namespace ConsoleApp1
     {
         public void M0()
         {
-            var i = 0;
+            var i = _i;
             i++;
             Console.WriteLine(i);
             Console.WriteLine(_a);
