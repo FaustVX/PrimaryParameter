@@ -80,6 +80,7 @@ You can type as many attributes as you want on a single parameter.
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v0.4.7|16/07/2023|Dont error on `nameof` access or inside the same argument list usage|
 |v0.4.6.1|16/07/2023|Fix typos in Readme.md|
 |v0.4.6|16/07/2023|Added `RefField` attribute</br>Curently uses `Unsafe.AsRef()` due to a compiler bug [dotnet/roslyn#67371](https://github.com/dotnet/roslyn/issues/67371)|
 |v0.4.5|18/05/2023|Added `Scope` and `IsReadonly` properties on `Field`</br>`Scope` property on `Property` defaulted to `public`|
