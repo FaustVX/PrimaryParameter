@@ -32,3 +32,17 @@ namespace ConsoleApp1
         private readonly ref int Abc = ref global::System.Runtime.CompilerServices.Unsafe.AsRef(in i);
     }
 }
+namespace ConsoleApp1
+{
+    partial struct Ref
+    {
+        private readonly int _a = a;
+    }
+}
+namespace ConsoleApp1
+{
+    partial class ParamNameOf
+    {
+        private readonly int Day = dateTime.Day;
+    }
+}

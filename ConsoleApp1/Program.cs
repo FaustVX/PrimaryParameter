@@ -3,6 +3,7 @@
 namespace ConsoleApp1
 {
     using PrimaryParameter.SG;
+    using System.Runtime.InteropServices;
 
     static class Program
     {
@@ -10,7 +11,7 @@ namespace ConsoleApp1
         {
             var c = new C(5, " hello");
             c.M0();
-            new Ref(ref c.B).ChangeAbc(3);
+            new Ref(ref c.B, 3).ChangeAbc(3);
             c.M0();
         }
     }
@@ -65,8 +66,14 @@ namespace ConsoleApp1
         }
     }
 
-    public ref partial struct Ref([RefField(IsRefReadonly = false, Name = nameof(Ref.Abc))]ref int i)
+    [StructLayout(LayoutKind.Auto)]
+    public readonly ref partial struct Ref([RefField(IsRefReadonly = false, Name = nameof(Ref.Abc))]ref int i, [Field]int a)
     {
-        public void ChangeAbc(int a) => Abc = a;
+        public readonly void ChangeAbc(int a) => Abc = a;
+        private void Test()
+            => Console.WriteLine(nameof(a));
     }
+
+    public partial class ParamNameOf([Field(AssignFormat = $$"""{0}.{{nameof(dateTime.Day)}}""", Type = typeof(int), Name = nameof(ParamNameOf.Day))]DateTime dateTime)
+    { }
 }
