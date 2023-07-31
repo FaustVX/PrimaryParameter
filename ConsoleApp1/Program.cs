@@ -7,7 +7,7 @@ namespace ConsoleApp1
 
     static class Program
     {
-        static void Main([Field] string[] args)
+        static void Main([Field, Property] string[] args)
         {
             var c = new C(5, " hello");
             c.M0();
