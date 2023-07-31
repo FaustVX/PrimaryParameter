@@ -29,18 +29,21 @@ public class PC01 : CodeFixProvider
         // Based on https://denace.dev/fixing-mistakes-with-roslyn-code-fixes
         public Task<Document> Fix(CancellationToken cancellationToken)
         {
-            var root = await document.GetSyntaxRootAsync(cancellationToken);
-
-            // the document does not have a syntax tree - nothing to do
-            if (root is null)
-                return document;
-
             // find the token at the additional location we reported in the analyzer
-            var token = (ArgumentSyntax)root.FindNode(diagnostic.Location.SourceSpan);
-            var updatedToken = token.WithExpression(((IdentifierNameSyntax)token.Expression).WithIdentifier(SyntaxFactory.Identifier(newName)));
-            var newRoot = root.ReplaceNode(token, updatedToken);
+            return root.FindNode(diagnostic.Location.SourceSpan) switch
+            {
+                ArgumentSyntax { Expression: IdentifierNameSyntax token } => Task.FromResult(ReplaceIdentifier(document, newName, root, token)),
+                IdentifierNameSyntax token => Task.FromResult(ReplaceIdentifier(document, newName, root, token)),
+                _ => Task.FromResult(document),
+            };
 
-            return Task.FromResult(document.WithSyntaxRoot(newRoot));
+            static Document ReplaceIdentifier(Document document, string newName, SyntaxNode root, IdentifierNameSyntax token)
+            {
+                var updatedToken = token.WithIdentifier(SyntaxFactory.Identifier(newName));
+                var newRoot = root.ReplaceNode(token, updatedToken);
+
+                return document.WithSyntaxRoot(newRoot);
+            }
         }
     }
 
