@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Operations;
+using System.Collections.Immutable;
 
 namespace PrimaryParameter.SG;
 
@@ -14,7 +15,7 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
     {
         var nodeSymbol = semanticModel.GetSymbolInfo(node).Symbol;
         if (_paramSymbol.Equals(nodeSymbol, SymbolEqualityComparer.Default) && !parameter.FieldNames.Any(n => n.Name == _paramSymbol.Name) && !IsIOperation<INameOfOperation>(node) && !IsInParameterListSyntax((ParameterListSyntax)_parameterSyntax.Parent!, node))
-            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.ErrorWhenAccessingPrimaryParameter, node.GetLocation(), nodeSymbol.Name, string.Join(" or ", parameter.FieldNames.Select(static n => $"'{n.Name}'"))));
+            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.ErrorWhenAccessingPrimaryParameter, node.GetLocation(), ImmutableDictionary.Create<string, string?>().Add("fields", string.Join(" ", parameter.FieldNames.Select(static n => n.Name))), nodeSymbol.Name, string.Join(" or ", parameter.FieldNames.Select(static n => $"'{n.Name}'"))));
     }
 
     private bool IsInParameterListSyntax(ParameterListSyntax parameterList, SyntaxNode node)
