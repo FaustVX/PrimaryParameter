@@ -34,9 +34,9 @@ namespace ConsoleApp1
 }
 namespace ConsoleApp1
 {
-    partial struct Ref
+    partial struct S
     {
-        private readonly int _a = a;
+        private readonly ref int Abc = ref global::System.Runtime.CompilerServices.Unsafe.AsRef(in i);
     }
 }
 namespace ConsoleApp1
