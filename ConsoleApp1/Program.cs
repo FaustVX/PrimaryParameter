@@ -7,7 +7,7 @@ namespace ConsoleApp1
 
     static class Program
     {
-        static void Main([Field] string[] args)
+        static void Main([Field, Property] string[] args)
         {
             var c = new C(5, " hello");
             c.M0();
@@ -73,6 +73,12 @@ namespace ConsoleApp1
         private void Test()
             => Console.WriteLine(nameof(a));
     }
+
+#if SHOW_ERRORS
+    [StructLayout(LayoutKind.Auto)]
+    public readonly partial struct S([RefField(IsRefReadonly = false, Name = nameof(S.Abc))]ref int i, [RefField]int a)
+    { }
+#endif
 
     public partial class ParamNameOf([Field(AssignFormat = $$"""{0}.{{nameof(dateTime.Day)}}""", Type = typeof(int), Name = nameof(ParamNameOf.Day))]DateTime dateTime)
     { }
