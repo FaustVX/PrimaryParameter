@@ -67,7 +67,7 @@ namespace ConsoleApp1
     }
 
     [StructLayout(LayoutKind.Auto)]
-    public readonly ref partial struct Ref([RefField(IsRefReadonly = false, Name = nameof(Ref.Abc))]ref int i, [RefField]int a)
+    public readonly ref partial struct Ref([RefField(IsRefReadonly = false, Name = nameof(Ref.Abc))]ref int i, [Field]int a)
     {
         public readonly void ChangeAbc(int a) => Abc = a;
         private void Test()
@@ -75,7 +75,7 @@ namespace ConsoleApp1
     }
 
     [StructLayout(LayoutKind.Auto)]
-    public readonly ref partial struct S([RefField(IsRefReadonly = false, Name = nameof(S.Abc))]ref int i, [RefField]int a)
+    public readonly partial struct S([RefField(IsRefReadonly = false, Name = nameof(S.Abc))]ref int i, [RefField]int a)
     {
     }
 
