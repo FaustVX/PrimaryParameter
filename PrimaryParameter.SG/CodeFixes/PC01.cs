@@ -16,22 +16,18 @@ public class PC01 : CodeFixProvider
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-#if DEBUG
-        //if (!System.Diagnostics.Debugger.IsAttached)
-        //    System.Diagnostics.Debugger.Launch();
-#endif
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
-        if ((root?.FindNode(context.Span)) is not { } id)
+        if ((root?.FindNode(context.Span)) is null)
             return;
         foreach (var diagnostic in context.Diagnostics)
             foreach (var newName in diagnostic.Properties["fields"]!.Split(' '))
-                context.RegisterCodeFix(CodeAction.Create($"Use {newName} instead", new Fixer(context.Document, newName, diagnostic).Fix, $"PC01{newName}{diagnostic.GetHashCode()}"), diagnostic);
+                context.RegisterCodeFix(CodeAction.Create($"Use {newName} instead", new Fixer(context.Document, newName, diagnostic, root).Fix, $"PC01{newName}{diagnostic.GetHashCode()}"), diagnostic);
     }
 
-    class Fixer(Document document, string newName, Diagnostic diagnostic)
+    class Fixer(Document document, string newName, Diagnostic diagnostic, SyntaxNode root)
     {
         // Based on https://denace.dev/fixing-mistakes-with-roslyn-code-fixes
-        public async Task<Document> Fix(CancellationToken cancellationToken)
+        public Task<Document> Fix(CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken);
 
@@ -44,7 +40,7 @@ public class PC01 : CodeFixProvider
             var updatedToken = token.WithExpression(((IdentifierNameSyntax)token.Expression).WithIdentifier(SyntaxFactory.Identifier(newName)));
             var newRoot = root.ReplaceNode(token, updatedToken);
 
-            return document.WithSyntaxRoot(newRoot);
+            return Task.FromResult(document.WithSyntaxRoot(newRoot));
         }
     }
 

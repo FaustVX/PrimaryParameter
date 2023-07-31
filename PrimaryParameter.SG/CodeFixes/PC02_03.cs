@@ -15,28 +15,18 @@ public class PC02_03 : CodeFixProvider
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-#if DEBUG
-        //if (!System.Diagnostics.Debugger.IsAttached)
-        //    System.Diagnostics.Debugger.Launch();
-#endif
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
-        if ((root?.FindNode(context.Span)) is not { } id)
+        if ((root?.FindNode(context.Span)) is null)
             return;
         foreach (var diagnostic in context.Diagnostics)
-            context.RegisterCodeFix(CodeAction.Create($"Remove Attribute", new Fixer(context.Document, diagnostic).Fix, $"PC02{diagnostic.GetHashCode()}"), diagnostic);
+            context.RegisterCodeFix(CodeAction.Create("Remove Attribute", new Fixer(context.Document, diagnostic, root).Fix, $"PC02{diagnostic.GetHashCode()}"), diagnostic);
     }
 
-    class Fixer(Document document, Diagnostic diagnostic)
+    class Fixer(Document document, Diagnostic diagnostic, SyntaxNode root)
     {
         // Based on https://denace.dev/fixing-mistakes-with-roslyn-code-fixes
         public async Task<Document> Fix(CancellationToken cancellationToken)
         {
-            var root = await document.GetSyntaxRootAsync(cancellationToken);
-
-            // the document does not have a syntax tree - nothing to do
-            if (root is null)
-                return document;
-
             // find the token at the additional location we reported in the analyzer
             var attributeSyntax = (AttributeSyntax)root.FindNode(diagnostic.Location.SourceSpan);
             var attributeListSyntax = (AttributeListSyntax)attributeSyntax.Parent!;
