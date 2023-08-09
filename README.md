@@ -5,7 +5,7 @@
 ## Description
 Using a `Field` or `RefField` or `Property` attribute on parameters.
 
-Automaticaly generate `private readonly` fields or `private readonly ref readonly` fields or `private` properties.
+Automaticaly generate `private readonly` fields or `private readonly ref readonly` fields or `public` properties.
 
 Forbid the use of primary constructor's parameters.
 
