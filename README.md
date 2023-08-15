@@ -40,8 +40,8 @@ partial class C([Field(Name = "_a", AssignFormat = "{0}.ToString()", Type = type
 ref partial struct Ref([RefField(IsReadonlyRef = false, IsRefReadonly = false), RefField(Name = nameof(Ref.I), Scope = "public")]int i)
 {
 # region Generated members
-    private ref int _i = ref Unsafe.AsRef(in i);                 // Bug in the compiler (https://github.com/dotnet/roslyn/issues/67371)
-    public readonly ref readonly int I = ref Unsafe.AsRef(in i); // Bug in the compiler (https://github.com/dotnet/roslyn/issues/67371)
+    private ref int _i = ref i;
+    public readonly ref readonly int I = ref i;
 # endregion
 }
 ```
@@ -80,6 +80,7 @@ You can type as many attributes as you want on a single parameter.
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.1.0|15/08/2023|[dotnet/roslyn#67371](https://github.com/dotnet/roslyn/issues/67371) fixed</br>(related to `v0.4.6`)|
 |v1.0.0|01/08/2023|Added code-fixes|
 |v0.4.7|16/07/2023|Don't error on `nameof` access or inside the same argument list usage|
 |v0.4.6.1|16/07/2023|Fix typos in Readme.md|
