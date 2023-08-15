@@ -18,7 +18,7 @@ record GenerateField(string Name, bool IsReadonly, string Scope, string AssignFo
 record GenerateRefField(string Name, bool IsReadonlyRef, bool IsRefReadonly, string Scope) : IGeneratedMember
 {
     public string GenerateMember(Parameter param)
-        => $"{Scope}{(IsReadonlyRef ? " readonly " : " ")}ref{(IsRefReadonly ? " readonly " : " ")}{param.ParamType} {Name} = ref global::System.Runtime.CompilerServices.Unsafe.AsRef(in {param.ParamName});";
+        => $"{Scope}{(IsReadonlyRef ? " readonly " : " ")}ref{(IsRefReadonly ? " readonly " : " ")}{param.ParamType} {Name} = ref {param.ParamName};";
 }
 
 record GenerateProperty(string Name, bool WithInit, string Scope, string AssignFormat, string? Type) : IGeneratedMember
