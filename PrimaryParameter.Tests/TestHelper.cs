@@ -9,22 +9,25 @@ public static class TestHelper
     public static Task Verify(string source)
     {
         // Parse the provided string into a C# syntax tree
-        var syntaxTree = CSharpSyntaxTree.ParseText(source);
+        var syntaxTree = CSharpSyntaxTree.ParseText(
+            source,
+            options: new(LanguageVersion.Preview));
 
         // Create a Roslyn compilation for the syntax tree.
         var compilation = CSharpCompilation.Create(
             assemblyName: "Tests",
-            syntaxTrees: new[] { syntaxTree });
+            syntaxTrees: new[] { syntaxTree })
+            .WithReferences(MetadataReference.CreateFromFile(typeof(Generator).Assembly.Location));
 
 
         // Create an instance of our EnumGenerator incremental source generator
-        var generator = new Generator();
+        var generator = GeneratorExtensions.AsSourceGenerator(new Generator());
 
         // The GeneratorDriver is used to run our generator against a compilation
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
-
-        // Run the source generator!
-        driver = driver.RunGenerators(compilation);
+        var driver = CSharpGeneratorDriver.Create(
+            Enumerable.Repeat(generator, 1),
+            parseOptions: new(LanguageVersion.Preview))
+            .RunGenerators(compilation);
 
         var settings = new VerifySettings();
         settings.UseDirectory("Verify");

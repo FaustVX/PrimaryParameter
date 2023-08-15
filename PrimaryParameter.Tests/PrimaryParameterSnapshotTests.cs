@@ -15,4 +15,18 @@ public class PrimaryParameterSnapshotTests
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task GeneratesFieldCorrectly()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([Field] int i)
+            {}
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
 }
