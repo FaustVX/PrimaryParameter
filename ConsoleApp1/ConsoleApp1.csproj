@@ -11,7 +11,7 @@
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
-    <RestoreSources>../PrimaryParameter.SG/bin/Debug;$(RestoreSources)</RestoreSources>
+    <RestoreSources>$(RestoreSources);../PrimaryParameter.SG/bin/Debug</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
