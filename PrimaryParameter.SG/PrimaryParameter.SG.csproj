@@ -31,7 +31,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>FaustVX.PrimaryParameter.SG</PackageId>
-    <Version>1.2.0-alpha.19</Version>
+    <Version>1.2.0</Version>
     <Authors>FaustVX</Authors>
     <RepositoryUrl>https://github.com/FaustVX/PrimaryParameter</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

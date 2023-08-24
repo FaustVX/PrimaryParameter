@@ -77,9 +77,24 @@ You can type as many attributes as you want on a single parameter.
 |`PC04`|RefField in non ref struct|Can't apply [RefField] in non ref struct '{0}'|`Error`|
 |`PC05`|RefField on non ref parameter|Can't apply [RefField] on non ref parameter '{0}'|`Error`|
 
+## `.csproj` properties
+|Property|Description|Default value|
+|--------|-----------|-------------|
+|Fields|||
+|`PrimaryParameter_Field_DefaultScope`|The default scope for fields generation|`private`|
+|`PrimaryParameter_Field_DefaultReadonly`|Should fields generates with `readonly` modifier|`true`|
+|Ref Fields|||
+|`PrimaryParameter_RefField_DefaultScope`|The default scope for `ref` field generation|`private`|
+|`PrimaryParameter_RefField_DefaultReadonlyRef`|Should `ref` fields generates with `readonly ref` modifier|`true`|
+|`PrimaryParameter_RefField_DefaultRefReadonly`|Should `ref` fields generates with `ref readonly` modifier|`true`|
+|Properties|||
+|`PrimaryParameter_Property_DefaultScope`|The default scope for properties generation|`public`|
+|`PrimaryParameter_Property_DefaultWithInit`|Should properties generates with `init` accessor|`true`|
+
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.2.0|25/08/2023|Support for default values customization|
 |v1.1.0|15/08/2023|[dotnet/roslyn#67371](https://github.com/dotnet/roslyn/issues/67371) fixed</br>(related to `v0.4.6`)|
 |v1.0.0|01/08/2023|Added code-fixes|
 |v0.4.7|16/07/2023|Don't error on `nameof` access or inside the same argument list usage|

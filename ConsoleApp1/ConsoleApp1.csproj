@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.2.0-alpha.19" />
+    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.2.0" />
   </ItemGroup>
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
