@@ -69,7 +69,7 @@ internal class Generator : IIncrementalGenerator
                 }
                 """);
         });
-        // Do a simple filter for paramerter
+        // Do a simple filter for parameter
         var paramDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: IsSyntaxTargetForGeneration, // select params with attributes
@@ -367,7 +367,7 @@ internal class Generator : IIncrementalGenerator
         var hasNamespace = !string.IsNullOrEmpty(nameSpace);
         if (hasNamespace)
         {
-            // We could use a file-scoped namespace here which would be a little impler, 
+            // We could use a file-scoped namespace here which would be a little simpler, 
             // but that requires C# 10, which might not be available. 
             // Depends what you want to support!
             sb
@@ -376,7 +376,7 @@ internal class Generator : IIncrementalGenerator
                 .AppendLine("{");
         }
 
-        // Loop through the full parent type hiearchy, starting with the outermost
+        // Loop through the full parent type hierarchy, starting with the outermost
         while (parentClass is not null)
         {
             parentsCount++; // keep track of how many layers deep we are
