@@ -9,7 +9,7 @@
     <!-- 👇 We don't want to reference the source generator dll directly in consuming projects -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!-- 👇 Generates a package at build -->
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
