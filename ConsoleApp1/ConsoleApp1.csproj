@@ -11,6 +11,7 @@
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+    <RestoreSources>../PrimaryParameter.SG/bin/Debug;$(RestoreSources)</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,15 +19,20 @@
     <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(Configuration)'=='Debug' ">
-    <ProjectReference Include="../PrimaryParameter.SG/PrimaryParameter.SG.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" ExcludeAssets="runtime" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(Configuration)'=='Release' ">
-    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.1.0" />
+  <ItemGroup>
+    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.2.0-alpha.19" />
   </ItemGroup>
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!--<PrimaryParameter_Field_DefaultScope>public</PrimaryParameter_Field_DefaultScope>-->
+    <!--<PrimaryParameter_Field_DefaultReadonly>false</PrimaryParameter_Field_DefaultReadonly>-->
+    <!--<PrimaryParameter_Property_DefaultScope>internal</PrimaryParameter_Property_DefaultScope>-->
+    <!--<PrimaryParameter_Property_DefaultWithInit>true</PrimaryParameter_Property_DefaultWithInit>-->
+    <!--<PrimaryParameter_RefField_DefaultScope>public</PrimaryParameter_RefField_DefaultScope>-->
+    <!--<PrimaryParameter_RefField_DefaultReadonlyRef>false</PrimaryParameter_RefField_DefaultReadonlyRef>-->
+    <!--<PrimaryParameter_RefField_DefaultRefReadonly>false</PrimaryParameter_RefField_DefaultRefReadonly>-->
   </PropertyGroup>
 
 </Project>

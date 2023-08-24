@@ -11,18 +11,25 @@ interface IGeneratedMember
 
 record GenerateField(string Name, bool IsReadonly, string Scope, string AssignFormat, string? Type) : IGeneratedMember
 {
+    public static string DefaultScope { get; internal set; } = "private";
+    public static bool DefaultReadonly { get; internal set; } = true;
     public string GenerateMember(Parameter param)
         => $"{Scope}{(IsReadonly ? " readonly " : " ")}{Type ?? param.ParamType} {Name} = {string.Format(AssignFormat, param.ParamName)};";
 }
 
 record GenerateRefField(string Name, bool IsReadonlyRef, bool IsRefReadonly, string Scope) : IGeneratedMember
 {
+    public static string DefaultScope { get; internal set; } = "private";
+    public static bool DefaultRefReadonly { get; internal set; } = true;
+    public static bool DefaultReadonlyRef { get; internal set; } = true;
     public string GenerateMember(Parameter param)
         => $"{Scope}{(IsReadonlyRef ? " readonly " : " ")}ref{(IsRefReadonly ? " readonly " : " ")}{param.ParamType} {Name} = ref {param.ParamName};";
 }
 
 record GenerateProperty(string Name, bool WithInit, string Scope, string AssignFormat, string? Type) : IGeneratedMember
 {
+    public static string DefaultScope { get; internal set; } = "public";
+    public static bool DefaultWithInit { get; internal set; } = true;
     public string GenerateMember(Parameter param)
         => $$"""{{Scope}} {{Type ?? param.ParamType}} {{Name}} { get; {{(WithInit ? "init; " : "")}}} = {{string.Format(AssignFormat, param.ParamName)}};""";
 }

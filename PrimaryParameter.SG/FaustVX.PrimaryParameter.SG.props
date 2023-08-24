@@ -1,0 +1,15 @@
+<Project>
+  <ItemGroup>
+    <CompilerVisibleProperty Include="PrimaryParameter_Field_DefaultScope" />
+    <CompilerVisibleProperty Include="PrimaryParameter_Field_DefaultReadonly" />
+  </ItemGroup>
+  <ItemGroup>
+    <CompilerVisibleProperty Include="PrimaryParameter_Property_DefaultScope" />
+    <CompilerVisibleProperty Include="PrimaryParameter_Property_DefaultWithInit" />
+  </ItemGroup>
+  <ItemGroup>
+    <CompilerVisibleProperty Include="PrimaryParameter_RefField_DefaultScope" />
+    <CompilerVisibleProperty Include="PrimaryParameter_RefField_DefaultReadonlyRef" />
+    <CompilerVisibleProperty Include="PrimaryParameter_RefField_DefaultRefReadonly" />
+  </ItemGroup>
+</Project>

@@ -8,6 +8,8 @@
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <!-- 👇 We don't want to reference the source generator dll directly in consuming projects -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
+    <!-- 👇 Generates a package at build -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,16 +19,19 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.6.0-1.final" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
+  <!-- 👇 This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+    <!-- 👇 Package the props file -->
+    <None Include="FaustVX.PrimaryParameter.SG.props" Pack="true" PackagePath="build" />
   </ItemGroup>
 
   <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>FaustVX.PrimaryParameter.SG</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0-alpha.19</Version>
     <Authors>FaustVX</Authors>
     <RepositoryUrl>https://github.com/FaustVX/PrimaryParameter</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

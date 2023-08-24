@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
@@ -20,7 +21,8 @@ internal class Generator : IIncrementalGenerator
         //if (!System.Diagnostics.Debugger.IsAttached)
         //    System.Diagnostics.Debugger.Launch();
 #endif
-        context.RegisterPostInitializationOutput(ctx =>
+        context.RegisterSourceOutput(context.AnalyzerConfigOptionsProvider, Options);
+        context.RegisterPostInitializationOutput(static ctx =>
         {
             ctx.AddSource("FieldAttribute.g.cs", """
                 using global::System;
@@ -79,6 +81,51 @@ internal class Generator : IIncrementalGenerator
 
         // Generate the source using the compilation and parameters
         context.RegisterSourceOutput(compilationAndParameters, (spc, source) => Execute(source.Left, source.Right!, spc));
+    }
+
+    private static void Options(SourceProductionContext context, AnalyzerConfigOptionsProvider provider)
+    {
+        if (GetStringProperty(provider.GlobalOptions, $"Field_{nameof(GenerateField.DefaultScope)}", out var defaultFieldScope))
+            GenerateField.DefaultScope = defaultFieldScope!;
+        if (GetBoolProperty(provider.GlobalOptions, $"Field_{nameof(GenerateField.DefaultReadonly)}", out var defaultFieldReadonly))
+            GenerateField.DefaultReadonly = defaultFieldReadonly;
+
+        if (GetStringProperty(provider.GlobalOptions, $"RefField_{nameof(GenerateRefField.DefaultScope)}", out var defaultRefFieldScope))
+            GenerateRefField.DefaultScope = defaultRefFieldScope!;
+        if (GetBoolProperty(provider.GlobalOptions, $"RefField_{nameof(GenerateRefField.DefaultRefReadonly)}", out var defaultRefFieldRefReadonly))
+            GenerateRefField.DefaultRefReadonly = defaultRefFieldRefReadonly;
+        if (GetBoolProperty(provider.GlobalOptions, $"RefField_{nameof(GenerateRefField.DefaultReadonlyRef)}", out var defaultRefFieldReadonlyRef))
+            GenerateRefField.DefaultReadonlyRef = defaultRefFieldReadonlyRef;
+
+        if (GetStringProperty(provider.GlobalOptions, $"Property_{nameof(GenerateProperty.DefaultScope)}", out var defaultPropertyScope))
+            GenerateProperty.DefaultScope = defaultPropertyScope!;
+        if (GetBoolProperty(provider.GlobalOptions, $"Property_{nameof(GenerateProperty.DefaultWithInit)}", out var defaultPropertyInit))
+            GenerateProperty.DefaultWithInit = defaultPropertyInit;
+
+        static bool GetProperty(AnalyzerConfigOptions options, string name, out string? str)
+            => options.TryGetValue($"build_property.{nameof(PrimaryParameter)}_{name}", out str) && str is not (null or "");
+
+        static bool GetBoolProperty(AnalyzerConfigOptions options, string name, out bool value)
+        {
+            if (GetProperty(options, name, out var str))
+            {
+                value = "true".Equals(str, StringComparison.OrdinalIgnoreCase);
+                return true;
+            }
+            value = false;
+            return false;
+        }
+
+        static bool GetStringProperty(AnalyzerConfigOptions options, string name, out string? value)
+        {
+            if (GetProperty(options, name, out var str))
+            {
+                value = str;
+                return true;
+            }
+            value = default;
+            return false;
+        }
     }
 
     private readonly List<Diagnostic> _diagnostics = new();
@@ -189,6 +236,8 @@ internal class Generator : IIncrementalGenerator
 
             var containingType = (BaseTypeDeclarationSyntax)((ParameterListSyntax)paramSyntax.Parent!).Parent!;
 
+            var isReadonlyType = containingType.Modifiers.Any(static mod => mod.IsKind(SyntaxKind.ReadOnlyKeyword));
+
             var semanticType = semanticModel.GetDeclaredSymbol(containingType)!;
 
             var memberNames = new HashSet<IGeneratedMember>();
@@ -205,8 +254,8 @@ internal class Generator : IIncrementalGenerator
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
                         var type = GetAttributePropertyTypeOf(operation, "Type", out _);
-                        var isReadonly = GetAttributeProperty<bool>(operation, "IsReadonly", out _, defaultValue: true);
-                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
+                        var isReadonly = isReadonlyType || GetAttributeProperty<bool>(operation, "IsReadonly", out _, defaultValue: GenerateField.DefaultReadonly);
+                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateField.DefaultScope;
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
                         else if (!memberNames.Add(new GenerateField(name, isReadonly, scope, format, type)))
@@ -216,9 +265,9 @@ internal class Generator : IIncrementalGenerator
                     {
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? ("_" + paramSyntax.Identifier.Text);
                         nameLocation ??= attribute.GetLocation();
-                        var isReadonlyRef = GetAttributeProperty<bool>(operation, "IsReadonlyRef", out _, defaultValue: true);
-                        var isRefReadonly = GetAttributeProperty<bool>(operation, "IsRefReadonly", out _, defaultValue: true);
-                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "private";
+                        var isReadonlyRef = isReadonlyType || GetAttributeProperty<bool>(operation, "IsReadonlyRef", out _, defaultValue: GenerateRefField.DefaultReadonlyRef);
+                        var isRefReadonly = GetAttributeProperty<bool>(operation, "IsRefReadonly", out _, defaultValue: GenerateRefField.DefaultRefReadonly);
+                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateRefField.DefaultScope;
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
                         else if (!memberNames.Add(new GenerateRefField(name, isReadonlyRef, isRefReadonly, scope)))
@@ -230,8 +279,8 @@ internal class Generator : IIncrementalGenerator
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
                         var type = GetAttributePropertyTypeOf(operation, "Type", out _);
-                        var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _);
-                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? "public";
+                        var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _, defaultValue: GenerateProperty.DefaultWithInit);
+                        var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateProperty.DefaultScope;
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
                         else if (!memberNames.Add(new GenerateProperty(name, withInit, scope, format, type)))
