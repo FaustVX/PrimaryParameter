@@ -11,7 +11,10 @@
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
-    <RestoreSources>$(RestoreSources);../PrimaryParameter.SG/bin/Debug</RestoreSources>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RestoreSources Condition="Exists('../PrimaryParameter.SG/bin/Debug')">$(RestoreSources);../PrimaryParameter.SG/bin/Debug</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,9 +25,11 @@
   <ItemGroup>
     <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.2.0" />
   </ItemGroup>
+  
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
+  
   <PropertyGroup>
     <!--<PrimaryParameter_Field_DefaultScope>public</PrimaryParameter_Field_DefaultScope>-->
     <!--<PrimaryParameter_Field_DefaultReadonly>false</PrimaryParameter_Field_DefaultReadonly>-->
@@ -34,5 +39,4 @@
     <!--<PrimaryParameter_RefField_DefaultReadonlyRef>false</PrimaryParameter_RefField_DefaultReadonlyRef>-->
     <!--<PrimaryParameter_RefField_DefaultRefReadonly>false</PrimaryParameter_RefField_DefaultRefReadonly>-->
   </PropertyGroup>
-
 </Project>
