@@ -128,7 +128,7 @@ internal class Generator : IIncrementalGenerator
         }
     }
 
-    private readonly List<Diagnostic> _diagnostics = new();
+    private readonly List<Diagnostic> _diagnostics = [];
 
     static bool IsSyntaxTargetForGeneration(SyntaxNode s, CancellationToken token)
         => s is ParameterSyntax { AttributeLists.Count: > 0 };
@@ -288,7 +288,7 @@ internal class Generator : IIncrementalGenerator
                     }
                 }
             }
-            var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), memberNames.ToArray());
+            var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), [.. memberNames]);
             yield return parameter;
             containingType.Accept(new ReportErrorWhenAccessingPrimaryParameter(paramSyntax, semanticModel, context, parameter));
         }

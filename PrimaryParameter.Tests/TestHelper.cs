@@ -16,16 +16,15 @@ public static class TestHelper
         // Create a Roslyn compilation for the syntax tree.
         var compilation = CSharpCompilation.Create(
             assemblyName: "Tests",
-            syntaxTrees: new[] { syntaxTree })
+        syntaxTrees: [syntaxTree])
             .WithReferences(MetadataReference.CreateFromFile(typeof(Generator).Assembly.Location));
-
 
         // Create an instance of our EnumGenerator incremental source generator
         var generator = GeneratorExtensions.AsSourceGenerator(new Generator());
 
         // The GeneratorDriver is used to run our generator against a compilation
         var driver = CSharpGeneratorDriver.Create(
-            Enumerable.Repeat(generator, 1),
+            [generator],
             parseOptions: new(LanguageVersion.Preview))
             .RunGenerators(compilation);
 
