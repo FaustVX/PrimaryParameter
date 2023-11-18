@@ -20,7 +20,7 @@ public static class TestHelper
             references: references); // 👈 pass the references to the compilation
 
         // Create an instance of our EnumGenerator incremental source generator
-        var generator = GeneratorExtensions.AsSourceGenerator(new Generator());
+        var generator = new Generator();
 
         // The GeneratorDriver is used to run our generator against a compilation
         var driver = CSharpGeneratorDriver.Create(generator)
