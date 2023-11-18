@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\pushToNuget.yaml = .github\workflows\pushToNuget.yaml
 		README.md = README.md
+		TODO.md = TODO.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimaryParameter.Tests", "PrimaryParameter.Tests\PrimaryParameter.Tests.csproj", "{F0304B7C-D4F9-45DD-8227-0185F4835A93}"
