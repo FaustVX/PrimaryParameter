@@ -73,7 +73,7 @@ internal class Generator : IIncrementalGenerator
         var paramDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: IsSyntaxTargetForGeneration, // select params with attributes
-                transform: GetSemanticTargetForGeneration) // sect the param with the [Field] or [Property] attribute
+                transform: GetSemanticTargetForGeneration) // select the param with the [Field] or [Property] attribute
             .Where(static m => m is not null)!; // filter out attributed parameters that we don't care about
 
         // Combine the selected parameters with the `Compilation`
