@@ -378,12 +378,12 @@ internal class Generator : IIncrementalGenerator
                 .Append("namespace ")
                 .AppendLine(nameSpace)
                 .AppendLine("{");
+            parentsCount++;
         }
 
         // Loop through the full parent type hierarchy, starting with the outermost
         while (parentClass is not null)
         {
-            parentsCount++; // keep track of how many layers deep we are
             sb
                 .Append(new string(' ', 4 * parentsCount))
                 .Append("partial ")
@@ -393,12 +393,13 @@ internal class Generator : IIncrementalGenerator
                 .Append(new string(' ', 4 * parentsCount))
                 .AppendLine("{");
             parentClass = parentClass.Child; // repeat with the next child
+            parentsCount++; // keep track of how many layers deep we are
         }
 
         foreach (var item in inner)
         {
             // Write the actual target generation code here
-            sb.Append(new string(' ', 4 * (parentsCount + 1)));
+            sb.Append(new string(' ', 4 * parentsCount));
             sb.AppendLine(item);
         }
 
@@ -407,14 +408,8 @@ internal class Generator : IIncrementalGenerator
         for (; parentsCount > 0; parentsCount--)
         {
             sb
-                .Append(new string(' ', 4 * parentsCount))
+                .Append(new string(' ', 4 * (parentsCount - 1)))
                 .AppendLine("}");
-        }
-
-        // Close the namespace, if we had one
-        if (hasNamespace)
-        {
-            sb.AppendLine("}");
         }
 
         return sb.ToString();
