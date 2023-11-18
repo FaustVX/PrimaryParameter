@@ -29,4 +29,52 @@ public class PrimaryParameterSnapshotTests
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task GeneratesPC01()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([Field] int i)
+            {
+                int M() => i;
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DontGeneratesPC01UsingParameter()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([Field] int i)
+            {
+                int M(int i) => i;
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DontGeneratesPC01UsingField()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([Field] int i)
+            {
+                int M() => _i;
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
 }
