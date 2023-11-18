@@ -1,6 +1,10 @@
 {
     "dotnet.defaultSolution": "PrimaryParameter.sln",
+    "files.associations": {
+        "*.verified.*": "plaintext",
+        "*.received.*": "plaintext",
+    },
     "[plaintext]": {
         "files.insertFinalNewline": false,
-    }
+    },
 }
