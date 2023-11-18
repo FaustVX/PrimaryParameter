@@ -47,6 +47,21 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
+    public Task CodeFixPC01()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([Field] int i)
+            {
+                int M() => i;
+            }
+            """;
+
+        return TestHelper.Verify<SG.CodeFixes.PC01>(source, SG.Diagnostics.ErrorWhenAccessingPrimaryParameter);
+    }
+
+    [Fact]
     public Task DontGeneratesPC01UsingParameter()
     {
         // The source code to test

@@ -1,0 +1,5 @@
+﻿using PrimaryParameter.SG;
+public partial class C([Field] int i)
+{
+    int M() => _i;
+}
