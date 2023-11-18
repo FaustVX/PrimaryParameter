@@ -28,10 +28,6 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-  </PropertyGroup>
-  
-  <PropertyGroup>
     <!--<PrimaryParameter_Field_DefaultScope>public</PrimaryParameter_Field_DefaultScope>-->
     <!--<PrimaryParameter_Field_DefaultReadonly>false</PrimaryParameter_Field_DefaultReadonly>-->
     <!--<PrimaryParameter_Property_DefaultScope>internal</PrimaryParameter_Property_DefaultScope>-->
