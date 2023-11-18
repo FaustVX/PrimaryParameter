@@ -5,6 +5,9 @@ namespace PrimaryParameter.SG;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("MicrosoftCodeAnalysisReleaseTracking", "RS2008:Enable analyzer release tracking")]
 static class Diagnostics
 {
+    /// <summary>
+    /// PC01
+    /// </summary>
     public static readonly DiagnosticDescriptor ErrorWhenAccessingPrimaryParameter = new(
         id: "PC01",
         title: "Accessing a Primary Parameter",
@@ -13,6 +16,9 @@ static class Diagnostics
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
+    /// <summary>
+    /// PC02
+    /// </summary>
     public static readonly DiagnosticDescriptor WarningOnNonPrimaryParameter = new(
         id: "PC02",
         title: "Attribute generate nothing",
@@ -21,6 +27,9 @@ static class Diagnostics
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true);
 
+    /// <summary>
+    /// PC03
+    /// </summary>
     public static readonly DiagnosticDescriptor WarningOnUsedMember = new(
         id: "PC03",
         title: "Attribute generate nothing",
@@ -29,6 +38,9 @@ static class Diagnostics
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true);
 
+    /// <summary>
+    /// PC04
+    /// </summary>
     public static readonly DiagnosticDescriptor ErrorWhenRefFieldInNonRefStruct = new(
         id: "PC04",
         title: "RefField in non ref struct",
@@ -37,6 +49,9 @@ static class Diagnostics
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
+    /// <summary>
+    /// PC05
+    /// </summary>
     public static readonly DiagnosticDescriptor ErrorWhenRefFieldOnNonRefParam = new(
         id: "PC05",
         title: "RefField on non ref parameter",
