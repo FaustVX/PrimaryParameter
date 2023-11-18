@@ -31,7 +31,7 @@ internal static class TestHelper
         _settings.UseUniqueDirectory();
     }
 
-    public static Task<ImmutableArray<Diagnostic>> Verify(string source, [CallerFilePath]string filePath = null!)
+    public static Task<ImmutableArray<Diagnostic>> Verify(string source, [CallerFilePath] string filePath = null!)
     {
         var diagnostics = RunGenerator(source, out var driver);
 
@@ -42,7 +42,7 @@ internal static class TestHelper
     }
 
     // Based on https://denace.dev/testing-roslyn-analyzers-and-code-fixes
-    public static async Task Verify<TCodeFixProvider>(string source, DiagnosticDescriptor descriptor, [CallerFilePath]string filePath = null!)
+    public static async Task Verify<TCodeFixProvider>(string source, DiagnosticDescriptor descriptor, [CallerFilePath] string filePath = null!)
     where TCodeFixProvider : CodeFixProvider, new()
     {
         // Pass the source code to our helper and snapshot test the output
@@ -81,7 +81,7 @@ internal static class TestHelper
         return diagnostics;
     }
 
-    private static Task Verify(SyntaxTree syntaxTree, string parameters, [CallerFilePath]string filePath = null!)
+    private static Task Verify(SyntaxTree syntaxTree, string parameters, [CallerFilePath] string filePath = null!)
     {
         var settings = new VerifySettings(_settings);
         settings.UseTextForParameters(parameters);

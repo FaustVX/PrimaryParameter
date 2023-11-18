@@ -34,6 +34,6 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
             yield return node;
             foreach (var n in GetAllParents(node.Parent))
                 yield return n;
-            }
+        }
     }
 }
