@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using PrimaryParameter.SG;
 using Microsoft.CodeAnalysis.CodeFixes;

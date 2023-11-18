@@ -1,6 +1,14 @@
 # top-most EditorConfig file
 root = true
 
+[*.cs]
+charset = "utf-8-bom"
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
 # Verify settings
 [*.{received,verified}.*]
 charset = "utf-8-bom"

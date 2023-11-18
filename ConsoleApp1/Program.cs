@@ -1,4 +1,4 @@
-﻿// #define SHOW_ERRORS
+// #define SHOW_ERRORS
 
 namespace ConsoleApp1
 {
