@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "actboy168.tasks",
-        "ms-dotnettools.csharp"
+        "ms-dotnettools.csdevkit",
+        "editorconfig.editorconfig"
     ]
 }

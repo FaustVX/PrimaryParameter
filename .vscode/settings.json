@@ -1,3 +1,6 @@
 {
-    "dotnet.defaultSolution": "PrimaryParameter.sln"
+    "dotnet.defaultSolution": "PrimaryParameter.sln",
+    "[plaintext]": {
+        "files.insertFinalNewline": false,
+    }
 }
