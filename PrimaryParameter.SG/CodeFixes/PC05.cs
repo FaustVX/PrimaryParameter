@@ -20,13 +20,13 @@ public class PC05 : CodeFixProvider
         if ((root?.FindNode(context.Span)) is null)
             return;
         foreach (var diagnostic in context.Diagnostics)
-            context.RegisterCodeFix(CodeAction.Create("Make ref parameter", new Fixer(context.Document, diagnostic, root).Fix, $"PC05{diagnostic.GetHashCode()}"), diagnostic);
+            context.RegisterCodeFix(CodeAction.Create("Make ref parameter", new Fixer(context.Document, diagnostic, root).Fix, $"PC05"), diagnostic);
     }
 
     class Fixer(Document document, Diagnostic diagnostic, SyntaxNode root)
     {
         // Based on https://denace.dev/fixing-mistakes-with-roslyn-code-fixes
-        public async Task<Document> Fix(CancellationToken cancellationToken)
+        public Task<Document> Fix(CancellationToken cancellationToken)
         {
             // find the token at the additional location we reported in the analyzer
             var attribute = (AttributeSyntax)root.FindNode(diagnostic.Location.SourceSpan);
@@ -35,7 +35,7 @@ public class PC05 : CodeFixProvider
             var updatedToken = parameter.AddModifiers(SyntaxFactory.Token(SyntaxKind.RefKeyword));
             var newRoot = root.ReplaceNode(parameter, updatedToken);
 
-            return document.WithSyntaxRoot(newRoot);
+            return Task.FromResult(document.WithSyntaxRoot(newRoot));
         }
     }
 

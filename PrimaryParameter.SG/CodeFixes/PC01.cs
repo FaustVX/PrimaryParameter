@@ -21,7 +21,7 @@ public class PC01 : CodeFixProvider
             return;
         foreach (var diagnostic in context.Diagnostics)
             foreach (var newName in diagnostic.Properties["fields"]!.Split(' '))
-                context.RegisterCodeFix(CodeAction.Create($"Use {newName} instead", new Fixer(context.Document, newName, diagnostic, root).Fix, $"PC01{newName}{diagnostic.GetHashCode()}"), diagnostic);
+                context.RegisterCodeFix(CodeAction.Create($"Use {newName} instead", new Fixer(context.Document, newName, diagnostic, root).Fix, $"PC01{newName}"), diagnostic);
     }
 
     class Fixer(Document document, string newName, Diagnostic diagnostic, SyntaxNode root)
