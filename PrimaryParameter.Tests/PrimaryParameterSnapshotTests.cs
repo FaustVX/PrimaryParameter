@@ -147,7 +147,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([DontUse] int i)
+            public class C([DontUse] int i)
             {
                 int M() => i;
             }
@@ -163,7 +163,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([DontUse(AllowInMemberInit = true)] int i)
+            public class C([DontUse(AllowInMemberInit = true)] int i)
             {
                 int M = i;
             }
@@ -179,7 +179,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([DontUse(AllowInMemberInit = true)] int i)
+            public class C([DontUse(AllowInMemberInit = true)] int i)
             {
                 string L = i.ToString();
             }
@@ -195,7 +195,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([DontUse(AllowInMemberInit = true)] int i)
+            public class C([DontUse(AllowInMemberInit = true)] int i)
             {
                 string L { get; } = i.ToString();
             }
@@ -211,7 +211,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([DontUse] int i)
+            public class C([DontUse] int i)
             {
                 int M => i;
             }
@@ -227,7 +227,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([DontUse] int i)
+            public class C([DontUse] int i)
             {
                 int M
                 {
@@ -246,10 +246,24 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([DontUse(AllowInMemberInit = false)] int i)
+            public class C([DontUse(AllowInMemberInit = false)] int i)
             {
                 int M = i;
             }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DontNeedPartialModifierOnType()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class C([DontUse] int i)
+            { }
             """;
 
         // Pass the source code to our helper and snapshot test the output

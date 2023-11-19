@@ -95,7 +95,8 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
-|v1.3.1|25/08/2023|fix a bug with member initialization|
+|v1.3.2|19/11/2023|Don't generate the partial generated type if not needed|
+|v1.3.1|19/11/2023|Fix a bug with member initialization|
 |v1.3.0|19/11/2023|Added `DontUseAttribute`<br/>Add a code-fix for `CS0282`<br/>Changed `PropertyAttribute.WithInit` to `PropertyAttribute.Setter`|
 |v1.2.0|25/08/2023|Support for default values customization|
 |v1.1.0|15/08/2023|[dotnet/roslyn#67371](https://github.com/dotnet/roslyn/issues/67371) fixed<br/>(related to `v0.4.6`)|

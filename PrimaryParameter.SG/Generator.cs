@@ -381,7 +381,15 @@ internal class Generator : IIncrementalGenerator
     }
 
     static void GenerateFiles(IEnumerable<Parameter> parameters, SourceProductionContext context)
-        => context.AddSource("FaustVX.PrimaryParameter.SG.g.cs", string.Concat(parameters.Select(static item => GetResource(item.Namespace, item.TypeName, item.FieldNames.Select(n => n.GenerateMember(item))))));
+    {
+        context.AddSource("FaustVX.PrimaryParameter.SG.g.cs", string.Concat(parameters.Where(Where).Select(Select)));
+
+        static bool Where(Parameter parameter)
+            => parameter.FieldNames.Length > 0;
+
+        static string Select(Parameter parameter)
+            => GetResource(parameter.Namespace, parameter.TypeName, parameter.FieldNames.Select(n => n.GenerateMember(parameter)));
+    }
 
     static string GetResource(string nameSpace, ParentClass? parentClass, IEnumerable<string> inner)
     {
