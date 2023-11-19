@@ -22,7 +22,7 @@ namespace ConsoleApp1
     }
 #endif
 
-    public partial class C([Field(Name = "_" + "a", AssignFormat = "{0}.ToString()", Type = typeof(string), IsReadonly = false), Field(Name = nameof(C.B), Scope = "public", IsReadonly = false), Field, Field] int i, [Property(WithInit = true, AssignFormat = "{0}.Trim()"), Field(Name = nameof(C.s))] string s)
+    public partial class C([Field(Name = "_" + "a", AssignFormat = "{0}.ToString()", Type = typeof(string), IsReadonly = false), Field(Name = nameof(C.B), Scope = "public", IsReadonly = false), Field, Field] int i, [Property(Setter = "init", AssignFormat = "{0}.Trim()"), Field(Name = nameof(C.s))] string s)
     {
         public void M0()
         {

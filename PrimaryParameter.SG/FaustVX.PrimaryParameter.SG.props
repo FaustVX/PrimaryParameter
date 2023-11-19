@@ -5,7 +5,7 @@
   </ItemGroup>
   <ItemGroup>
     <CompilerVisibleProperty Include="PrimaryParameter_Property_DefaultScope" />
-    <CompilerVisibleProperty Include="PrimaryParameter_Property_DefaultWithInit" />
+    <CompilerVisibleProperty Include="PrimaryParameter_Property_DefaultSetter" />
   </ItemGroup>
   <ItemGroup>
     <CompilerVisibleProperty Include="PrimaryParameter_RefField_DefaultScope" />

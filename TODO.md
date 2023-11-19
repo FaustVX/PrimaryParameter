@@ -3,7 +3,7 @@
 	- Just report an error without generation new member
 - [ ] Add a code-fix for [CS0282](https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0282?f1url=%3FappId%3Droslyn%26k%3Dk(CS0282))
 	- Add `[StructLayout(LayoutKind.Auto)]` to (ref) struct
-- [ ] Modify `PropertyAttribute.WithInit`
+- [x] Modify `PropertyAttribute.WithInit`
 	- Change to `Setter`
 	- Allowed values:
 		- null (no setter)

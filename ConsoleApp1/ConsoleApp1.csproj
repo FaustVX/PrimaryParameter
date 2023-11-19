@@ -31,7 +31,7 @@
     <!--<PrimaryParameter_Field_DefaultScope>public</PrimaryParameter_Field_DefaultScope>-->
     <!--<PrimaryParameter_Field_DefaultReadonly>false</PrimaryParameter_Field_DefaultReadonly>-->
     <!--<PrimaryParameter_Property_DefaultScope>internal</PrimaryParameter_Property_DefaultScope>-->
-    <!--<PrimaryParameter_Property_DefaultWithInit>true</PrimaryParameter_Property_DefaultWithInit>-->
+    <!--<PrimaryParameter_Property_DefaultSetter>set</PrimaryParameter_Property_DefaultSetter>-->
     <!--<PrimaryParameter_RefField_DefaultScope>public</PrimaryParameter_RefField_DefaultScope>-->
     <!--<PrimaryParameter_RefField_DefaultReadonlyRef>false</PrimaryParameter_RefField_DefaultReadonlyRef>-->
     <!--<PrimaryParameter_RefField_DefaultRefReadonly>false</PrimaryParameter_RefField_DefaultRefReadonly>-->

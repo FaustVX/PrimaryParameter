@@ -92,4 +92,58 @@ public class PrimaryParameterSnapshotTests
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task DefaultPropertySetter_Set()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([Property] int i)
+            {
+                int M() => _i;
+            }
+            """;
+
+        SG.GenerateProperty.DefaultSetter = "set";
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DefaultPropertySetter_Init()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([Property] int i)
+            {
+                int M() => _i;
+            }
+            """;
+
+        SG.GenerateProperty.DefaultSetter = "init";
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DefaultPropertySetter_None()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([Property] int i)
+            {
+                int M() => _i;
+            }
+            """;
+
+        SG.GenerateProperty.DefaultSetter = "";
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
 }

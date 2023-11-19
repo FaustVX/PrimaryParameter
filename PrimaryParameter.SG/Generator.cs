@@ -66,7 +66,7 @@ internal class Generator : IIncrementalGenerator
                         public string Name { get; init; }
                         public string AssignFormat { get; init; }
                         public Type Type { get; init; }
-                        public bool WithInit { get; init; }
+                        public string Setter { get; init; }
                         public string Scope { get; init; }
                     }
                 }
@@ -102,8 +102,8 @@ internal class Generator : IIncrementalGenerator
 
         if (GetStringProperty(provider.GlobalOptions, $"Property_{nameof(GenerateProperty.DefaultScope)}", out var defaultPropertyScope))
             GenerateProperty.DefaultScope = defaultPropertyScope!;
-        if (GetBoolProperty(provider.GlobalOptions, $"Property_{nameof(GenerateProperty.DefaultWithInit)}", out var defaultPropertyInit))
-            GenerateProperty.DefaultWithInit = defaultPropertyInit;
+        if (GetStringProperty(provider.GlobalOptions, $"Property_{nameof(GenerateProperty.DefaultSetter)}", out var defaultPropertySetter))
+            GenerateProperty.DefaultSetter = defaultPropertySetter!;
 
         static bool GetProperty(AnalyzerConfigOptions options, string name, out string? str)
             => options.TryGetValue($"build_property.{nameof(PrimaryParameter)}_{name}", out str) && str is not (null or "");
@@ -282,11 +282,11 @@ internal class Generator : IIncrementalGenerator
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
                         var type = GetAttributePropertyTypeOf(operation, "Type", out _);
-                        var withInit = GetAttributeProperty<bool>(operation, "WithInit", out _, defaultValue: GenerateProperty.DefaultWithInit);
+                        var setter = GetAttributeProperty<string>(operation, "Setter", out _) ?? GenerateProperty.DefaultSetter;
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateProperty.DefaultScope;
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateProperty(name, withInit, scope, format, type)))
+                        else if (!memberNames.Add(new GenerateProperty(name, setter, scope, format, type)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                 }

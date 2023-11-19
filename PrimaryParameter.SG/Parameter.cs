@@ -26,10 +26,10 @@ record GenerateRefField(string Name, bool IsReadonlyRef, bool IsRefReadonly, str
         => $"{Scope}{(IsReadonlyRef ? " readonly " : " ")}ref{(IsRefReadonly ? " readonly " : " ")}{param.ParamType} {Name} = ref {param.ParamName};";
 }
 
-record GenerateProperty(string Name, bool WithInit, string Scope, string AssignFormat, string? Type) : IGeneratedMember
+record GenerateProperty(string Name, string Setter, string Scope, string AssignFormat, string? Type) : IGeneratedMember
 {
     public static string DefaultScope { get; internal set; } = "public";
-    public static bool DefaultWithInit { get; internal set; } = true;
+    public static string DefaultSetter { get; internal set; } = "init";
     public string GenerateMember(Parameter param)
-        => $$"""{{Scope}} {{Type ?? param.ParamType}} {{Name}} { get; {{(WithInit ? "init; " : "")}}} = {{string.Format(AssignFormat, param.ParamName)}};""";
+        => $$"""{{Scope}} {{Type ?? param.ParamType}} {{Name}} { get; {{(!string.IsNullOrWhiteSpace(Setter) ? Setter + "; " : "")}}} = {{string.Format(AssignFormat, param.ParamName)}};""";
 }

@@ -12,7 +12,7 @@ Forbid the use of primary constructor's parameters.
 ## Usage
 
 ```cs
-partial class C([Field(Name = "_a", AssignFormat = "{0}.ToString()", Type = typeof(string)), Field(Name = nameof(C._b)), Field, Property(WithInit = true)]int i) // type must be partial, but can be class / struct
+partial class C([Field(Name = "_a", AssignFormat = "{0}.ToString()", Type = typeof(string)), Field(Name = nameof(C._b)), Field, Property(Setter = "init")]int i) // type must be partial, but can be class / struct
 {
 # region Generated members
     // private readonly string _a = i.ToString();   // generated field (with type and formated assignment)
@@ -63,7 +63,7 @@ You can type as many attributes as you want on a single parameter.
 ||`IsRefReadnoly`|To generate the `ref readonly` modifier|`true`|
 ||`Scope`|To change the scope of the generated property|`private`|
 |`Property`|`Name`|Property to modify the generated field name|`I` (for a parameter named `i`)|
-||`WithInit`|To generate the `init` accessor along the `get`|`false`|
+||`Setter`|To generate the `set`, `init` or neither accessor along the `get`|`init`|
 ||`Scope`|To change the scope of the generated property|`public`|
 ||`AssignFormat`|To change the assignment for that property|`{0}`|
 ||`Type`|To change the type for that property|same type as parameter|
@@ -89,7 +89,7 @@ You can type as many attributes as you want on a single parameter.
 |`PrimaryParameter_RefField_DefaultRefReadonly`|Should `ref` fields generates with `ref readonly` modifier|`true`|
 |Properties|||
 |`PrimaryParameter_Property_DefaultScope`|The default scope for properties generation|`public`|
-|`PrimaryParameter_Property_DefaultWithInit`|Should properties generates with `init` accessor|`true`|
+|`PrimaryParameter_Property_DefaultSetter`|Should properties generates with `set`, `init` or neither accessor|`init`|
 
 ## Versions
 |Version|Date|Comments|
