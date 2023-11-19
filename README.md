@@ -3,7 +3,7 @@
 [![Update NuGet](https://github.com/FaustVX/PrimaryParameter/actions/workflows/pushToNuget.yaml/badge.svg)](https://github.com/FaustVX/PrimaryParameter/actions/workflows/pushToNuget.yaml)
 
 ## Description
-Using a `Field` or `RefField` or `Property` attribute on parameters.
+Using a `Field`, `RefField`, `Property` or `DontUse` attribute on parameters.
 
 Automatically generate `private readonly` fields or `private readonly ref readonly` fields or `public` properties.
 
@@ -46,9 +46,9 @@ ref partial struct Ref([RefField(IsReadonlyRef = false, IsRefReadonly = false), 
 }
 ```
 
-To enable the feature, type `[Field]` or `[RefField]` or `[Property]` before the primary parameter you want.
+To enable the feature, type `[Field]` `[RefField]`, `[Property]`, or `[DontUse]` before the primary parameter you want.
 
-You can type as many attributes as you want on a single parameter.
+You can type as many attributes as you want on a single parameter (Except for `DontUse`).
 
 ## Attribute Properties
 |Attribute|Property|Comments|Default value|
@@ -67,11 +67,12 @@ You can type as many attributes as you want on a single parameter.
 ||`Scope`|To change the scope of the generated property|`public`|
 ||`AssignFormat`|To change the assignment for that property|`{0}`|
 ||`Type`|To change the type for that property|same type as parameter|
+|`DontUse`|`AllowInMemberInit`|Change to allow the use of parameter in member initializer|`true`|
 
 ## Reported Diagnostics
 |Code|Title|Message|Severity|
 |----|-----|-------|--------|
-|`PC01`|Accessing a Primary Parameter|Can't access a primary parameter ('{0}') with a [Field] or [RefField] or [Property] attribute, use {1}|`Error`|
+|`PC01`|Accessing a Primary Parameter|Can't access a primary parameter ('{0}') with a [Field], [RefField], [Property] or [DontUse] attribute, use {1}|`Error`|
 |`PC02`|Attribute generate nothing|Use this attributes only on primary parameter|`Warning`|
 |`PC03`|Attribute generate nothing|This member's name ('{0}') is already used|`Warning`</br>`Error` when a member's name is already used in the type|
 |`PC04`|RefField in non ref struct|Can't apply [RefField] in non ref struct '{0}'|`Error`|

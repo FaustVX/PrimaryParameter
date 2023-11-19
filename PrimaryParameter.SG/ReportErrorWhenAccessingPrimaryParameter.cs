@@ -6,7 +6,7 @@ using System.Collections.Immutable;
 
 namespace PrimaryParameter.SG;
 
-class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, SemanticModel semanticModel, SourceProductionContext context, Parameter parameter) : CSharpSyntaxWalker
+class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, SemanticModel semanticModel, SourceProductionContext context, Parameter parameter, bool allowInMemberInit) : CSharpSyntaxWalker
 {
     private readonly ParameterSyntax _parameterSyntax = paramSyntax;
     private readonly ISymbol _paramSymbol = semanticModel.GetDeclaredSymbol(paramSyntax)!;
@@ -14,8 +14,18 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
     public override void VisitIdentifierName(IdentifierNameSyntax node)
     {
         var nodeSymbol = semanticModel.GetSymbolInfo(node).Symbol;
-        if (_paramSymbol.Equals(nodeSymbol, SymbolEqualityComparer.Default) && !parameter.FieldNames.Any(n => n.Name == _paramSymbol.Name) && !IsIOperation<INameOfOperation>(node) && !IsInParameterListSyntax((ParameterListSyntax)_parameterSyntax.Parent!, node))
-            context.ReportDiagnostic(Diagnostic.Create(Diagnostics.ErrorWhenAccessingPrimaryParameter, node.GetLocation(), ImmutableDictionary.Create<string, string?>().Add("fields", string.Join(" ", parameter.FieldNames.Select(static n => n.Name))), nodeSymbol.Name, string.Join(" or ", parameter.FieldNames.Select(static n => $"'{n.Name}'"))));
+        if (_paramSymbol.Equals(nodeSymbol, SymbolEqualityComparer.Default))
+        {
+            if (allowInMemberInit && node.Parent?.Parent?.Parent?.Parent switch
+                {
+                    FieldDeclarationSyntax { Declaration.Variables: [{ Initializer.Value: var init }] } => init == node,
+                    PropertyDeclarationSyntax { Initializer.Value: var init } => init == node,
+                    _ => false,
+                })
+                    return;
+            if (!parameter.FieldNames.Any(n => n.Name == _paramSymbol.Name) && !IsIOperation<INameOfOperation>(node) && !IsInParameterListSyntax((ParameterListSyntax)_parameterSyntax.Parent!, node))
+                context.ReportDiagnostic(Diagnostic.Create(Diagnostics.ErrorWhenAccessingPrimaryParameter, node.GetLocation(), ImmutableDictionary.Create<string, string?>().Add("fields", string.Join(" ", parameter.FieldNames.Select(static n => n.Name))), nodeSymbol.Name, string.Join(" or ", parameter.FieldNames.Select(static n => $"'{n.Name}'"))));
+        }
     }
 
     private bool IsInParameterListSyntax(ParameterListSyntax parameterList, SyntaxNode node)
@@ -24,16 +34,4 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
     private bool IsIOperation<TOp>(SyntaxNode node)
         where TOp : IOperation
         => semanticModel.GetOperation(node) is TOp || (node.Parent is not null && IsIOperation<TOp>(node.Parent));
-
-    private IEnumerable<SyntaxNode> GetAllParents(SyntaxNode node)
-    {
-        if (node == null)
-            yield break;
-        else if (node.Parent is not null)
-        {
-            yield return node;
-            foreach (var n in GetAllParents(node.Parent))
-                yield return n;
-        }
-    }
 }

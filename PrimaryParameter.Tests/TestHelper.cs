@@ -31,14 +31,12 @@ internal static class TestHelper
         _settings.UseUniqueDirectory();
     }
 
-    public static Task<ImmutableArray<Diagnostic>> Verify(string source, [CallerFilePath] string filePath = null!)
+    public static Task Verify(string source, [CallerFilePath] string filePath = null!)
     {
-        var diagnostics = RunGenerator(source, out var driver);
+        _ = RunGenerator(source, out var driver);
 
         // Use verify to snapshot test the source generator output!
-        return Verifier.Verify(driver, settings: _settings, filePath)
-            .ToTask()
-            .ContinueWith(_ => diagnostics);
+        return Verifier.Verify(driver, settings: _settings, filePath);
     }
 
     // Based on https://denace.dev/testing-roslyn-analyzers-and-code-fixes

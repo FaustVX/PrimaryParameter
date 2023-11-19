@@ -100,9 +100,7 @@ public class PrimaryParameterSnapshotTests
         var source = """
             using PrimaryParameter.SG;
             public partial class C([Property] int i)
-            {
-                int M() => _i;
-            }
+            { }
             """;
 
         SG.GenerateProperty.DefaultSetter = "set";
@@ -118,9 +116,7 @@ public class PrimaryParameterSnapshotTests
         var source = """
             using PrimaryParameter.SG;
             public partial class C([Property] int i)
-            {
-                int M() => _i;
-            }
+            { }
             """;
 
         SG.GenerateProperty.DefaultSetter = "init";
@@ -136,12 +132,58 @@ public class PrimaryParameterSnapshotTests
         var source = """
             using PrimaryParameter.SG;
             public partial class C([Property] int i)
-            {
-                int M() => _i;
-            }
+            { }
             """;
 
         SG.GenerateProperty.DefaultSetter = "";
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GeneratesPC01WithDontUse()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([DontUse] int i)
+            {
+                int M() => i;
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DontGeneratesPC01WithDontUseOnMember()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([DontUse(AllowInMemberInit = true)] int i)
+            {
+                int M = i;
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DoGeneratesPC01WithDontUseOnMember()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([DontUse(AllowInMemberInit = false)] int i)
+            {
+                int M = i;
+            }
+            """;
 
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
