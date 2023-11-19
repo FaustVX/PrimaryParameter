@@ -92,7 +92,7 @@ internal class Generator : IIncrementalGenerator
         var paramDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: IsSyntaxTargetForGeneration, // select params with attributes
-                transform: GetSemanticTargetForGeneration) // select the param with the [Field] or [Property] attribute
+                transform: GetSemanticTargetForGeneration) // select the param with the [Field], [RefField], [Property] or [DontUse] attribute
             .Where(static m => m is not null)!; // filter out attributed parameters that we don't care about
 
         // Combine the selected parameters with the `Compilation`
@@ -170,7 +170,7 @@ internal class Generator : IIncrementalGenerator
 
                 var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
-                // Is the attribute the [Field] or [RefField] or [Property] or [DontUse] attribute?
+                // Is the attribute the [Field], [RefField], [Property] or [DontUse] attribute?
                 if (fullName is "PrimaryParameter.SG.FieldAttribute" or "PrimaryParameter.SG.RefFieldAttribute" or "PrimaryParameter.SG.PropertyAttribute" or "PrimaryParameter.SG.DontUseAttribute")
                 {
                     if (parameterSyntax is not { Parent.Parent: ClassDeclarationSyntax or StructDeclarationSyntax })
