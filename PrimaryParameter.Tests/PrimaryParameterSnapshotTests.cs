@@ -158,7 +158,7 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
-    public Task DontGeneratesPC01WithDontUseOnMember()
+    public Task DontGeneratesPC01WithDontUseOnMember_Simple()
     {
         // The source code to test
         var source = """
@@ -166,6 +166,73 @@ public class PrimaryParameterSnapshotTests
             public partial class C([DontUse(AllowInMemberInit = true)] int i)
             {
                 int M = i;
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DontGeneratesPC01WithDontUseOnMember_Complex()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([DontUse(AllowInMemberInit = true)] int i)
+            {
+                string L = i.ToString();
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DontGeneratesPC01WithDontUseOnPropertyInitializer()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([DontUse(AllowInMemberInit = true)] int i)
+            {
+                string L { get; } = i.ToString();
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DoGeneratesPC01WithDontUseOnPropertyBody()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([DontUse] int i)
+            {
+                int M => i;
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task DoGeneratesPC01WithDontUseOnPropertyGet()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public partial class C([DontUse] int i)
+            {
+                int M
+                {
+                    get => i;
+                }
             }
             """;
 

@@ -16,13 +16,13 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
         var nodeSymbol = semanticModel.GetSymbolInfo(node).Symbol;
         if (_paramSymbol.Equals(nodeSymbol, SymbolEqualityComparer.Default))
         {
-            if (allowInMemberInit && node.Parent?.Parent?.Parent?.Parent switch
-                {
-                    FieldDeclarationSyntax { Declaration.Variables: [{ Initializer.Value: var init }] } => init == node,
-                    PropertyDeclarationSyntax { Initializer.Value: var init } => init == node,
-                    _ => false,
-                })
-                    return;
+            if (allowInMemberInit && Contains(node, static node => node switch
+            {
+                FieldDeclarationSyntax => true,
+                PropertyDeclarationSyntax { Initializer: not null, ExpressionBody: null } => true,
+                _ => false,
+            }))
+                return;
             if (!parameter.FieldNames.Any(n => n.Name == _paramSymbol.Name) && !IsIOperation<INameOfOperation>(node) && !IsInParameterListSyntax((ParameterListSyntax)_parameterSyntax.Parent!, node))
                 context.ReportDiagnostic(Diagnostic.Create(Diagnostics.ErrorWhenAccessingPrimaryParameter, node.GetLocation(), ImmutableDictionary.Create<string, string?>().Add("fields", string.Join(" ", parameter.FieldNames.Select(static n => n.Name))), nodeSymbol.Name, string.Join(" or ", parameter.FieldNames.Select(static n => $"'{n.Name}'"))));
         }
@@ -34,4 +34,16 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
     private bool IsIOperation<TOp>(SyntaxNode node)
         where TOp : IOperation
         => semanticModel.GetOperation(node) is TOp || (node.Parent is not null && IsIOperation<TOp>(node.Parent));
+
+
+    private bool Contains(SyntaxNode node, Func<SyntaxNode, bool> contains)
+    {
+        if (node == null)
+            return false;
+        if (contains(node))
+            return true;
+        if (node.Parent is not null)
+            return Contains(node.Parent, contains);
+        return false;
+    }
 }
