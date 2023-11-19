@@ -13,6 +13,11 @@
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- https://weblog.west-wind.com/posts/2022/Sep/11/Referencing-a-Local-Private-NuGet-Package-in-your-Solution#project-specific-packagesource -->
+    <RestoreAdditionalProjectSources Condition="Exists('../PrimaryParameter.SG/bin/Release')">$(RestoreAdditionalProjectSources);../PrimaryParameter.SG/bin/Release</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Exclude the output of source generators from the compilation -->
     <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
