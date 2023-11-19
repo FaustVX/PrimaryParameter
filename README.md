@@ -74,7 +74,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 |----|-----|-------|--------|
 |`PC01`|Accessing a Primary Parameter|Can't access a primary parameter ('{0}') with a [Field], [RefField], [Property] or [DontUse] attribute, use {1}|`Error`|
 |`PC02`|Attribute generate nothing|Use this attributes only on primary parameter|`Warning`|
-|`PC03`|Attribute generate nothing|This member's name ('{0}') is already used|`Warning`</br>`Error` when a member's name is already used in the type|
+|`PC03`|Attribute generate nothing|This member's name ('{0}') is already used|`Warning`<br/>`Error` when a member's name is already used in the type|
 |`PC04`|RefField in non ref struct|Can't apply [RefField] in non ref struct '{0}'|`Error`|
 |`PC05`|RefField on non ref parameter|Can't apply [RefField] on non ref parameter '{0}'|`Error`|
 
@@ -95,19 +95,20 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.3.0|19/11/2023|Added `DontUseAttribute`<br/>Add a code-fix for `CS0282`<br/>Changed `PropertyAttribute.WithInit` to `PropertyAttribute.Setter`|
 |v1.2.0|25/08/2023|Support for default values customization|
-|v1.1.0|15/08/2023|[dotnet/roslyn#67371](https://github.com/dotnet/roslyn/issues/67371) fixed</br>(related to `v0.4.6`)|
+|v1.1.0|15/08/2023|[dotnet/roslyn#67371](https://github.com/dotnet/roslyn/issues/67371) fixed<br/>(related to `v0.4.6`)|
 |v1.0.0|01/08/2023|Added code-fixes|
 |v0.4.7|16/07/2023|Don't error on `nameof` access or inside the same argument list usage|
 |v0.4.6.1|16/07/2023|Fix typos in Readme.md|
-|v0.4.6|16/07/2023|Added `RefField` attribute</br>Currently uses `Unsafe.AsRef()` due to a compiler bug [dotnet/roslyn#67371](https://github.com/dotnet/roslyn/issues/67371)|
-|v0.4.5|18/05/2023|Added `Scope` and `IsReadonly` properties on `Field`</br>`Scope` property on `Property` defaulted to `public`|
+|v0.4.6|16/07/2023|Added `RefField` attribute<br/>Currently uses `Unsafe.AsRef()` due to a compiler bug [dotnet/roslyn#67371](https://github.com/dotnet/roslyn/issues/67371)|
+|v0.4.5|18/05/2023|Added `Scope` and `IsReadonly` properties on `Field`<br/>`Scope` property on `Property` defaulted to `public`|
 |v0.4.4|28/04/2023|Added `AssignFormat` and `Type` properties|
 |v0.4.3|27/04/2023|`Field` and `Property` now have `using global::System`|
 |v0.4.2|26/04/2023|Bug-fix with previous update|
 |v0.4.1|25/04/2023|More precise warnings/errors location|
 |v0.4.0|22/04/2023|Added `PC02` and `PC03` warnings/errors|
-|v0.3.1|21/04/2023|Added `Scope` property on `Property` attribute</br>Attributes are `internal`|
+|v0.3.1|21/04/2023|Added `Scope` property on `Property` attribute<br/>Attributes are `internal`|
 |v0.3.0|20/04/2023|Added `Property` attribute|
 |v0.2.0|20/04/2023|Support for `Name` fields and multiple `Field`|
 |v0.1.0|19/04/2023|Initial release|
