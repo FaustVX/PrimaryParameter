@@ -39,8 +39,12 @@ internal static class TestHelper
         return Verifier.Verify(driver, settings: _settings, filePath);
     }
 
+    public static Task Verify<TCodeFixProvider>(string source, DiagnosticDescriptor descriptor, [CallerFilePath] string filePath = null!)
+    where TCodeFixProvider : CodeFixProvider, new()
+    => Verify<TCodeFixProvider>(source, descriptor.Id, filePath);
+
     // Based on https://denace.dev/testing-roslyn-analyzers-and-code-fixes
-    public static async Task Verify<TCodeFixProvider>(string source, DiagnosticDescriptor descriptor, [CallerFilePath] string filePath = null!)
+    public static async Task Verify<TCodeFixProvider>(string source, string descriptorId, [CallerFilePath] string filePath = null!)
     where TCodeFixProvider : CodeFixProvider, new()
     {
         // Pass the source code to our helper and snapshot test the output
@@ -48,7 +52,7 @@ internal static class TestHelper
         var ws = CreateWorkspace(SourceText.From(source));
         var originalDocument = ws.GetProjectUnderTest().GetDocumentUnderTest();
         foreach (var diagnostic in diagnostics)
-            if (diagnostic.Id == descriptor.Id)
+            if (diagnostic.Id == descriptorId)
             {
                 var i = 1;
                 var solutions = ApplyCodeFix<TCodeFixProvider>(originalDocument, diagnostic);

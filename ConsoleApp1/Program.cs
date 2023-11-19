@@ -1,10 +1,9 @@
 // #define SHOW_ERRORS
+using PrimaryParameter.SG;
+using System.Runtime.InteropServices;
 
 namespace ConsoleApp1
 {
-    using PrimaryParameter.SG;
-    using System.Runtime.InteropServices;
-
     static class Program
     {
         static void Main([Field, Property] string[] args)
@@ -82,4 +81,9 @@ namespace ConsoleApp1
 
     public partial class ParamNameOf([Field(AssignFormat = $$"""{0}.{{nameof(dateTime.Day)}}""", Type = typeof(int), Name = nameof(ParamNameOf.Day))] DateTime dateTime)
     { }
+}
+
+public partial struct C([Field] int i)
+{
+    int a = 0;
 }
