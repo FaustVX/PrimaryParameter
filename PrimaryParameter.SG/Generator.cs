@@ -402,8 +402,8 @@ internal class Generator : IIncrementalGenerator
         var hasNamespace = !string.IsNullOrEmpty(nameSpace);
         if (hasNamespace)
         {
-            // We could use a file-scoped namespace here which would be a little simpler, 
-            // but that requires C# 10, which might not be available. 
+            // We could use a file-scoped namespace here which would be a little simpler,
+            // but that requires C# 10, which might not be available.
             // Depends what you want to support!
             sb
                 .Append("namespace ")
@@ -470,7 +470,7 @@ internal class Generator : IIncrementalGenerator
             // We have a namespace. Use that as the type
             nameSpace = namespaceParent.Name.ToString();
 
-            // Keep moving "out" of the namespace declarations until we 
+            // Keep moving "out" of the namespace declarations until we
             // run out of nested namespace declarations
             while (true)
             {
