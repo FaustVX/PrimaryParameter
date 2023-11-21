@@ -395,7 +395,7 @@ internal class Generator : IIncrementalGenerator
 
     static void GenerateFile(IEnumerable<Parameter> parameters, SourceProductionContext context, string type)
     {
-        if (parameters.ToArray() is not { Length: > 0 } list)
+        if (parameters.ToArray() is not { Length: > 0 } list || type == nameof(DoNotUse))
             return;
         context.AddSource($"FaustVX.PrimaryParameter.SG.{type}.g.cs", string.Concat(list.Where(Where).Select(Select)));
 
