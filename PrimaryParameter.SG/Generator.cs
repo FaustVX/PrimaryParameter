@@ -147,6 +147,10 @@ internal class Generator : IIncrementalGenerator
         }
     }
 
+    private const string Field = "PrimaryParameter.SG.FieldAttribute";
+    private const string RefField = "PrimaryParameter.SG.RefFieldAttribute";
+    private const string Property = "PrimaryParameter.SG.PropertyAttribute";
+    private const string DontUse = "PrimaryParameter.SG.DontUseAttribute";
     private readonly List<Diagnostic> _diagnostics = [];
 
     static bool IsSyntaxTargetForGeneration(SyntaxNode s, CancellationToken token)
@@ -171,7 +175,7 @@ internal class Generator : IIncrementalGenerator
                 var fullName = attributeContainingTypeSymbol.ToDisplayString();
 
                 // Is the attribute the [Field], [RefField], [Property] or [DontUse] attribute?
-                if (fullName is "PrimaryParameter.SG.FieldAttribute" or "PrimaryParameter.SG.RefFieldAttribute" or "PrimaryParameter.SG.PropertyAttribute" or "PrimaryParameter.SG.DontUseAttribute")
+                if (fullName is Field or RefField or Property or DontUse)
                 {
                     if (parameterSyntax is not { Parent.Parent: ClassDeclarationSyntax or StructDeclarationSyntax })
                     {
@@ -179,12 +183,12 @@ internal class Generator : IIncrementalGenerator
                         return null;
                     }
                     var hasDiagnostics = false;
-                    if (fullName is "PrimaryParameter.SG.RefFieldAttribute" && !(parameterSyntax is { Parent.Parent: StructDeclarationSyntax { Modifiers: var typeModifiers } } && typeModifiers.Any(static mod => mod.IsKind(SyntaxKind.RefKeyword))))
+                    if (fullName is RefField && !(parameterSyntax is { Parent.Parent: StructDeclarationSyntax { Modifiers: var typeModifiers } } && typeModifiers.Any(static mod => mod.IsKind(SyntaxKind.RefKeyword))))
                     {
                         _diagnostics.Add(Diagnostic.Create(Diagnostics.ErrorWhenRefFieldInNonRefStruct, attributeSyntax.GetLocation(), ((BaseTypeDeclarationSyntax)parameterSyntax.Parent.Parent).Identifier.Text));
                         hasDiagnostics = true;
                     }
-                    if (fullName is "PrimaryParameter.SG.RefFieldAttribute" && !(parameterSyntax is { Modifiers: var paramModifiers } && paramModifiers.Any(static mod => mod.IsKind(SyntaxKind.RefKeyword))))
+                    if (fullName is RefField && !(parameterSyntax is { Modifiers: var paramModifiers } && paramModifiers.Any(static mod => mod.IsKind(SyntaxKind.RefKeyword))))
                     {
                         _diagnostics.Add(Diagnostic.Create(Diagnostics.ErrorWhenRefFieldOnNonRefParam, attributeSyntax.GetLocation(), parameterSyntax.Identifier.Text));
                         hasDiagnostics = true;
@@ -223,16 +227,14 @@ internal class Generator : IIncrementalGenerator
         var paramsToGenerate = GetTypesToGenerate(compilation, distinctParams, context);
 
         GenerateFiles(paramsToGenerate, context);
-
-
     }
 
     static IEnumerable<Parameter> GetTypesToGenerate(Compilation compilation, IEnumerable<ParameterSyntax> parameters, SourceProductionContext context)
     {
-        if ((compilation.GetTypeByMetadataName("PrimaryParameter.SG.FieldAttribute"),
-            compilation.GetTypeByMetadataName("PrimaryParameter.SG.RefFieldAttribute"),
-            compilation.GetTypeByMetadataName("PrimaryParameter.SG.PropertyAttribute"),
-            compilation.GetTypeByMetadataName("PrimaryParameter.SG.DontUseAttribute")) is not (INamedTypeSymbol fieldAttributeSymbol,
+        if ((compilation.GetTypeByMetadataName(Field),
+            compilation.GetTypeByMetadataName(RefField),
+            compilation.GetTypeByMetadataName(Property),
+            compilation.GetTypeByMetadataName(DontUse)) is not (INamedTypeSymbol fieldAttributeSymbol,
             INamedTypeSymbol refFieldAttributeSymbol,
             INamedTypeSymbol propertyAttributeSymbol,
             INamedTypeSymbol dontUseAttributeSymbol))
