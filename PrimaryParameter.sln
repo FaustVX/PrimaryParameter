@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimaryParameter.Tests", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimaryParameter.CodeFix", "PrimaryParameter.CodeFix\PrimaryParameter.CodeFix.csproj", "{B8A1B6B2-8F0C-4476-BC57-EE5DC5FDA922}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimaryParameter.Diagnostics", "PrimaryParameter.Diagnostics\PrimaryParameter.Diagnostics.csproj", "{637D9CAB-C10C-4519-868C-F7DE49F37B5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{B8A1B6B2-8F0C-4476-BC57-EE5DC5FDA922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8A1B6B2-8F0C-4476-BC57-EE5DC5FDA922}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8A1B6B2-8F0C-4476-BC57-EE5DC5FDA922}.Release|Any CPU.Build.0 = Release|Any CPU
+		{637D9CAB-C10C-4519-868C-F7DE49F37B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{637D9CAB-C10C-4519-868C-F7DE49F37B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{637D9CAB-C10C-4519-868C-F7DE49F37B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{637D9CAB-C10C-4519-868C-F7DE49F37B5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

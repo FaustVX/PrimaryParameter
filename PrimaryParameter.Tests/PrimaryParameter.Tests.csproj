@@ -35,6 +35,11 @@
     </PackageReference>
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- https://weblog.west-wind.com/posts/2022/Sep/11/Referencing-a-Local-Private-NuGet-Package-in-your-Solution#project-specific-packagesource -->
+    <RestoreAdditionalProjectSources Condition="Exists('../PrimaryParameter.Diagnostics/bin/Release')">$(RestoreAdditionalProjectSources);../PrimaryParameter.Diagnostics/bin/Release</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\PrimaryParameter.SG\PrimaryParameter.SG.csproj" />
     <ProjectReference Include="..\PrimaryParameter.CodeFix\PrimaryParameter.CodeFix.csproj" />
