@@ -37,7 +37,7 @@ public class PC04 : CodeFixProvider
             var partialModifierIndex = baseTypeDeclaration.Modifiers.IndexOf(SyntaxKind.PartialKeyword);
             if (partialModifierIndex == -1)
                 return Task.FromResult(document);
-            var updatedToken = baseTypeDeclaration.WithModifiers(baseTypeDeclaration.Modifiers.RemoveAt(partialModifierIndex).Add(SyntaxFactory.Token(SyntaxKind.RefKeyword).WithTriviaFrom(baseTypeDeclaration.Modifiers[^1])).Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword).WithTriviaFrom(baseTypeDeclaration.Modifiers[^1])));
+            var updatedToken = baseTypeDeclaration.WithModifiers(baseTypeDeclaration.Modifiers.RemoveAt(partialModifierIndex).Add(SyntaxFactory.Token(SyntaxKind.RefKeyword).WithTriviaFrom(baseTypeDeclaration.Modifiers[baseTypeDeclaration.Modifiers.Count - 1])).Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword).WithTriviaFrom(baseTypeDeclaration.Modifiers[baseTypeDeclaration.Modifiers.Count - 1])));
             var newRoot = root.ReplaceNode(baseTypeDeclaration, updatedToken);
 
             return Task.FromResult(document.WithSyntaxRoot(newRoot));
