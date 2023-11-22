@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 namespace PrimaryParameter.SG;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("MicrosoftCodeAnalysisReleaseTracking", "RS2008:Enable analyzer release tracking")]
-static class Diagnostics
+public static class Diagnostics
 {
     /// <summary>
     /// PC01
