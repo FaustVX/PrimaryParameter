@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageVersionOverrideEnabled>false</CentralPackageVersionOverrideEnabled>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- https://weblog.west-wind.com/posts/2022/Sep/11/Referencing-a-Local-Private-NuGet-Package-in-your-Solution#project-specific-packagesource -->
+    <RestoreAdditionalProjectSources Condition="Exists('../PrimaryParameter.SG/bin/Release')">$(RestoreAdditionalProjectSources);../PrimaryParameter.SG/bin/Release</RestoreAdditionalProjectSources>
+    <RestoreAdditionalProjectSources Condition="Exists('../PrimaryParameter.Diagnostics/bin/Release')">$(RestoreAdditionalProjectSources);../PrimaryParameter.Diagnostics/bin/Release</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.7.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.7.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
+    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
+    <PackageVersion Include="Verify.SourceGenerators" Version="2.2.0" />
+    <PackageVersion Include="Verify.XUnit" Version="22.5.0" />
+    <PackageVersion Include="xunit" Version="2.6.1" />
+    <PackageVersion Include="xunit.extensibility.core" Version="2.6.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+    <PackageVersion Include="FaustVX.PrimaryParameter.SG" Version="1.3.2" />
+    <PackageVersion Include="FaustVX.PrimaryParameter.Diagnostics" Version="1.0.0" />
+  </ItemGroup>
+</Project>

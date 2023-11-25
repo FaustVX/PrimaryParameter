@@ -13,22 +13,15 @@
     <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- https://weblog.west-wind.com/posts/2022/Sep/11/Referencing-a-Local-Private-NuGet-Package-in-your-Solution#project-specific-packagesource -->
-    <RestoreAdditionalProjectSources Condition="Exists('../PrimaryParameter.SG/bin/Release')">$(RestoreAdditionalProjectSources);../PrimaryParameter.SG/bin/Release</RestoreAdditionalProjectSources>
-    <RestoreAdditionalProjectSources Condition="Exists('../PrimaryParameter.CodeFix/bin/Release')">$(RestoreAdditionalProjectSources);../PrimaryParameter.CodeFix/bin/Release</RestoreAdditionalProjectSources>
-  </PropertyGroup>
-
   <ItemGroup>
     <!-- Exclude the output of source generators from the compilation -->
     <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.3.2" />
-    <!-- <ProjectReference Include="..\PrimaryParameter.SG\PrimaryParameter.SG.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="All" /> -->
+    <PackageReference Include="FaustVX.PrimaryParameter.SG" />
   </ItemGroup>
-  
+
   <PropertyGroup>
     <!--<PrimaryParameter_Field_DefaultScope>public</PrimaryParameter_Field_DefaultScope>-->
     <!--<PrimaryParameter_Field_DefaultReadonly>false</PrimaryParameter_Field_DefaultReadonly>-->
