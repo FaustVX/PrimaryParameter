@@ -73,31 +73,12 @@
             }
         },
         {
-            "label": "pack SG",
+            "label": "pack",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "pack",
                 "-tl",
-                "${workspaceFolder}/PrimaryParameter.SG/PrimaryParameter.SG.csproj",
-            ],
-            "problemMatcher": "$msCompile",
-            "options": {
-                "statusbar": {
-                    "running": {
-                        "label": "Packing"
-                    }
-                }
-            }
-        },
-        {
-            "label": "pack CF",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "pack",
-                "-tl",
-                "${workspaceFolder}/PrimaryParameter.CodeFix/PrimaryParameter.CodeFix.csproj",
             ],
             "problemMatcher": "$msCompile",
             "options": {
