@@ -15,9 +15,7 @@
             "problemMatcher": "$msCompile",
             "options": {
                 "statusbar": {
-                    "running": {
-                        "label": "building"
-                    }
+                    "hide": true
                 }
             }
         },
@@ -34,9 +32,7 @@
             "problemMatcher": "$msCompile",
             "options": {
                 "statusbar": {
-                    "running": {
-                        "label": "publising"
-                    }
+                    "hide": true
                 }
             }
         },
@@ -53,11 +49,116 @@
             "problemMatcher": "$msCompile",
             "options": {
                 "statusbar": {
+                    "hide": true
+                }
+            }
+        },
+        {
+            "label": "clean Nuget",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "nuget",
+                "locals",
+                "all",
+                "--clear",
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
                     "running": {
-                        "label": "watching"
+                        "label": "Cleaning"
                     }
                 }
             }
-        }
+        },
+        {
+            "label": "pack SG",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "pack",
+                "-tl",
+                "${workspaceFolder}/PrimaryParameter.SG/PrimaryParameter.SG.csproj",
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
+                    "running": {
+                        "label": "Packing"
+                    }
+                }
+            }
+        },
+        {
+            "label": "pack CF",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "pack",
+                "-tl",
+                "${workspaceFolder}/PrimaryParameter.CodeFix/PrimaryParameter.CodeFix.csproj",
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
+                    "running": {
+                        "label": "Packing"
+                    }
+                }
+            }
+        },
+        {
+            "label": "restore",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "restore",
+                "-tl",
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
+                    "running": {
+                        "label": "Restoring"
+                    }
+                }
+            }
+        },
+        {
+            "label": "build all",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "-tl",
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
+                    "running": {
+                        "label": "Building"
+                    }
+                }
+            }
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "-tl",
+                "${workspaceFolder}/PrimaryParameter.Tests/PrimaryParameter.Tests.csproj",
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "statusbar": {
+                    "running": {
+                        "label": "Testing"
+                    }
+                }
+            }
+        },
     ]
 }
