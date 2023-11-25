@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="FaustVX.PrimaryParameter.SG" />
+    <PackageReference Include="FaustVX.PrimaryParameter.CodeFix" />
   </ItemGroup>
 
   <PropertyGroup>

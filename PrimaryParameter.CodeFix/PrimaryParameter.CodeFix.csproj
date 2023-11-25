@@ -16,19 +16,20 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
-    <PackageReference Include="FaustVX.PrimaryParameter.Diagnostics" />
+    <ProjectReference Include="../PrimaryParameter.Diagnostics/PrimaryParameter.Diagnostics.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- 👇 This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
   <ItemGroup>
     <None Include="$(OutputPath)/$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <Content Include="../PrimaryParameter.Diagnostics/bin/Release/netstandard2.0/PrimaryParameter.Diagnostics.dll" Pack="true" PackagePath="lib/netstandard2.0" />
     <None Include="../README.md" Pack="true" PackagePath="/" />
     <None Include="../LICENSE" Pack="true" PackagePath="/" />
   </ItemGroup>
 
   <PropertyGroup>
     <PackageId>FaustVX.PrimaryParameter.CodeFix</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.0-beta1</Version>
     <Authors>FaustVX</Authors>
     <RepositoryUrl>https://github.com/FaustVX/PrimaryParameter</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

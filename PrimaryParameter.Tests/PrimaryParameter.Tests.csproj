@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -35,6 +35,7 @@
     </PackageReference>
     <ProjectReference Include="../PrimaryParameter.SG/PrimaryParameter.SG.csproj" />
     <ProjectReference Include="../PrimaryParameter.CodeFix/PrimaryParameter.CodeFix.csproj" />
+    <ProjectReference Include="../PrimaryParameter.Diagnostics/PrimaryParameter.Diagnostics.csproj" />
   </ItemGroup>
 
 </Project>
