@@ -1,4 +1,4 @@
-- [x] Add `DontUseAttribute`
+- [x] Add `DoNotUseAttribute`
 	- Property: Disallow in members initialization
 	- Just report an error without generation new member
 - [x] Add a code-fix for [CS0282](https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0282?f1url=%3FappId%3Droslyn%26k%3Dk(CS0282))

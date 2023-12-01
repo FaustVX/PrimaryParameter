@@ -142,12 +142,12 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
-    public Task GeneratesPC01WithDontUse()
+    public Task GeneratesPC01WithDoNotUse()
     {
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DontUse] int i)
+            public class C([DoNotUse] int i)
             {
                 int M() => i;
             }
@@ -158,12 +158,12 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
-    public Task DontGeneratesPC01WithDontUseOnMember_Simple()
+    public Task DontGeneratesPC01WithDoNotUseOnMember_Simple()
     {
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DontUse(AllowInMemberInit = true)] int i)
+            public class C([DoNotUse(AllowInMemberInit = true)] int i)
             {
                 int M = i;
             }
@@ -174,12 +174,12 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
-    public Task DontGeneratesPC01WithDontUseOnMember_Complex()
+    public Task DontGeneratesPC01WithDoNotUseOnMember_Complex()
     {
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DontUse(AllowInMemberInit = true)] int i)
+            public class C([DoNotUse(AllowInMemberInit = true)] int i)
             {
                 string L = i.ToString();
             }
@@ -190,12 +190,12 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
-    public Task DontGeneratesPC01WithDontUseOnPropertyInitializer()
+    public Task DontGeneratesPC01WithDoNotUseOnPropertyInitializer()
     {
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DontUse(AllowInMemberInit = true)] int i)
+            public class C([DoNotUse(AllowInMemberInit = true)] int i)
             {
                 string L { get; } = i.ToString();
             }
@@ -206,12 +206,12 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
-    public Task DoGeneratesPC01WithDontUseOnPropertyBody()
+    public Task DoGeneratesPC01WithDoNotUseOnPropertyBody()
     {
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DontUse] int i)
+            public class C([DoNotUse] int i)
             {
                 int M => i;
             }
@@ -222,12 +222,12 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
-    public Task DoGeneratesPC01WithDontUseOnPropertyGet()
+    public Task DoGeneratesPC01WithDoNotUseOnPropertyGet()
     {
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DontUse] int i)
+            public class C([DoNotUse] int i)
             {
                 int M
                 {
@@ -241,12 +241,12 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
-    public Task DoGeneratesPC01WithDontUseOnMember()
+    public Task DoGeneratesPC01WithDoNotUseOnMember()
     {
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DontUse(AllowInMemberInit = false)] int i)
+            public class C([DoNotUse(AllowInMemberInit = false)] int i)
             {
                 int M = i;
             }
@@ -262,7 +262,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DontUse] int i)
+            public class C([DoNotUse] int i)
             { }
             """;
 

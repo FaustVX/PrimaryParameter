@@ -3,7 +3,7 @@ using global::System;
 namespace PrimaryParameter.SG
 {
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false, AllowMultiple = false)]
-    sealed class DontUseAttribute : Attribute
+    sealed class DoNotUseAttribute : Attribute
     {
         public bool AllowInMemberInit { get; init; }
     }
