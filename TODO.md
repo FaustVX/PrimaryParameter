@@ -1,7 +1,7 @@
 - [x] Add `DoNotUseAttribute`
 	- Property: Disallow in members initialization
 	- Just report an error without generation new member
-- [x] Add a code-fix for [CS0282](https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0282?f1url=%3FappId%3Droslyn%26k%3Dk(CS0282))
+- [x] Add a code-fix for [CS0282](https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0282)
 	- Add `[StructLayout(LayoutKind.Auto)]` to (ref) struct
 - [x] Modify `PropertyAttribute.WithInit`
 	- Change to `Setter`
@@ -13,3 +13,5 @@
 - [x] Don't generate empty partial types
 - [ ] Better performance
 	- Based on @333fred and @CyrusNajmabadi https://discord.com/channels/143867839282020352/598678594750775301/1176598732691734568
+- [ ] Add a code-fix for [CS9113](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/constructor-errors#primary-constructor-declaration)
+	- Add `[Field]` or `[Property]` or `[DoNotUse]` (or `[RefField]` to ref struct) to primary parameter
