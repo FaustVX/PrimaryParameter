@@ -29,15 +29,14 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
         }
     }
 
-    private bool IsInParameterListSyntax(ParameterListSyntax parameterList, SyntaxNode node)
+    private static bool IsInParameterListSyntax(ParameterListSyntax parameterList, SyntaxNode node)
         => parameterList.IsEquivalentTo(node) || (node.Parent is not null && IsInParameterListSyntax(parameterList, node.Parent));
 
     private bool IsIOperation<TOp>(SyntaxNode node)
         where TOp : IOperation
         => semanticModel.GetOperation(node) is TOp || (node.Parent is not null && IsIOperation<TOp>(node.Parent));
 
-
-    private bool Contains(SyntaxNode node, Func<SyntaxNode, bool> contains)
+    private static bool Contains(SyntaxNode node, Func<SyntaxNode, bool> contains)
     {
         if (node == null)
             return false;
