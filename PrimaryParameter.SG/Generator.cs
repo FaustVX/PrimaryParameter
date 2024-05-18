@@ -37,6 +37,7 @@ internal class Generator : IIncrementalGenerator
                         public Type Type { get; init; }
                         public bool IsReadonly { get; init; }
                         public string Scope { get; init; }
+                        public string Summary { get; init; }
                     }
                 }
 
@@ -53,6 +54,7 @@ internal class Generator : IIncrementalGenerator
                         public string Scope { get; init; }
                         public bool IsReadonlyRef { get; init; }
                         public bool IsRefReadonly { get; init; }
+                        public string Summary { get; init; }
                     }
                 }
 
@@ -70,6 +72,7 @@ internal class Generator : IIncrementalGenerator
                         public Type Type { get; init; }
                         public string Setter { get; init; }
                         public string Scope { get; init; }
+                        public string Summary { get; init; }
                     }
                 }
 
