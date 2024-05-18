@@ -8,8 +8,7 @@ public class PrimaryParameterSnapshotTests
     {
         // The source code to test
         var source = """
-            public class C
-            {}
+            public class C;
             """;
 
         // Pass the source code to our helper and snapshot test the output
@@ -22,8 +21,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([Field] int i)
-            {}
+            public partial class C([Field] int i);
             """;
 
         // Pass the source code to our helper and snapshot test the output
@@ -99,8 +97,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([Property] int i)
-            { }
+            public partial class C([Property] int i);
             """;
 
         SG.GenerateProperty.DefaultSetter = "set";
@@ -115,8 +112,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([Property] int i)
-            { }
+            public partial class C([Property] int i);
             """;
 
         SG.GenerateProperty.DefaultSetter = "init";
@@ -131,8 +127,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public partial class C([Property] int i)
-            { }
+            public partial class C([Property] int i);
             """;
 
         SG.GenerateProperty.DefaultSetter = "";
@@ -262,8 +257,33 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class C([DoNotUse] int i)
-            { }
+            public class C([DoNotUse] int i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GenerateSingleLineDocumentation()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class C([Property(Summary = "Documentation")] int i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GenerateMultiLineDocumentation()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class C([Property(Summary = "Documentation\nNew Line")] int i);
             """;
 
         // Pass the source code to our helper and snapshot test the output
