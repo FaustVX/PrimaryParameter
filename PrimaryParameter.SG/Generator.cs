@@ -237,7 +237,7 @@ internal class Generator : IIncrementalGenerator
         // Convert each ParameterSyntax to a Parameter
         var paramsToGenerate = GetTypesToGenerate(compilation, distinctParams, context);
 
-        GenerateFiles(paramsToGenerate, context);
+        GenerateFile(paramsToGenerate, context);
 
 
     }
@@ -398,7 +398,7 @@ internal class Generator : IIncrementalGenerator
         return default;
     }
 
-    static void GenerateFiles(IEnumerable<Parameter> parameters, SourceProductionContext context)
+    static void GenerateFile(IEnumerable<Parameter> parameters, SourceProductionContext context)
     {
         context.AddSource("FaustVX.PrimaryParameter.SG.g.cs", string.Concat(parameters.Where(Where).Select(Select)));
 
