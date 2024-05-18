@@ -17,6 +17,6 @@ else
     git commit -am "Bumped version ``$version``"
 }
 
-git tag $version
 git push
+git tag $version
 git push --tags
