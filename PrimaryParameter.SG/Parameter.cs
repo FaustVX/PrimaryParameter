@@ -13,16 +13,12 @@ interface IGeneratedMember
 record GenerateSummary(IGeneratedMember Generator, string Summary) : IGeneratedMember
 {
     string IGeneratedMember.Name => Generator.Name;
-    string IGeneratedMember.GenerateMember(Parameter param)
-    {
-        var sb = new StringBuilder()
-        .AppendLine("/// <summary>");
-        foreach (var line in Summary.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Select(static text => $"/// {text}"))
-            sb.AppendLine(line);
-        return sb.AppendLine("/// </summary>")
+    string IGeneratedMember.GenerateMember(Parameter param) => new StringBuilder()
+        .AppendLine("/// <summary>")
+        .AppendLineRange(Summary.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Select(static text => $"/// {text}"))
+        .AppendLine("/// </summary>")
         .AppendLine(Generator.GenerateMember(param))
         .ToString();
-    }
 }
 
 record GenerateField(string Name, bool IsReadonly, string Scope, string AssignFormat, string? Type) : IGeneratedMember
@@ -65,5 +61,15 @@ record GenerateProperty(string Name, string Setter, string Scope, string AssignF
         if (string.IsNullOrEmpty(Summary))
             return this;
         return new GenerateSummary(this, Summary!);
+    }
+}
+
+file static class Ext
+{
+    public static StringBuilder AppendLineRange(this StringBuilder sb, IEnumerable<string> strings)
+    {
+        foreach (var item in strings)
+            sb.AppendLine(item);
+        return sb;
     }
 }
