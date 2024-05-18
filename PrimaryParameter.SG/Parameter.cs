@@ -12,10 +12,11 @@ interface IGeneratedMember
 
 record GenerateSummary(IGeneratedMember Generator, string Summary) : IGeneratedMember
 {
+    private static readonly char[] _newLineChars = ['\r', '\n'];
     string IGeneratedMember.Name => Generator.Name;
     string IGeneratedMember.GenerateMember(Parameter param) => new StringBuilder()
         .AppendLine("/// <summary>")
-        .AppendLineRange(Summary.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Select(static text => $"/// {text}"))
+        .AppendLineRange(Summary.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries).Select(static text => $"/// {text}"))
         .AppendLine("/// </summary>")
         .AppendLine(Generator.GenerateMember(param))
         .ToString();

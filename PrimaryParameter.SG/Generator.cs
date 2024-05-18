@@ -409,6 +409,7 @@ internal class Generator : IIncrementalGenerator
             => GetResource(parameter.Namespace, parameter.TypeName, parameter.FieldNames.Select(n => n.GenerateMember(parameter)));
     }
 
+    static readonly char[] _newLineChars = ['\r', '\n'];
     static string GetResource(string nameSpace, ParentClass? parentClass, IEnumerable<string> inner)
     {
         var sb = new StringBuilder();
@@ -446,7 +447,7 @@ internal class Generator : IIncrementalGenerator
             parentsCount++; // keep track of how many layers deep we are
         }
 
-        foreach (var item in inner.SelectMany(static text => text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)))
+        foreach (var item in inner.SelectMany(static text => text.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)))
         {
             // Write the actual target generation code here
             sb.Append(new string(' ', 4 * parentsCount));
