@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace PrimaryParameter.SG;
 
 record Parameter(string Namespace, ParentClass TypeName, string ParamName, string ParamType, IGeneratedMember[] FieldNames);
@@ -11,12 +13,16 @@ interface IGeneratedMember
 record GenerateSummary(IGeneratedMember Generator, string Summary) : IGeneratedMember
 {
     string IGeneratedMember.Name => Generator.Name;
-    string IGeneratedMember.GenerateMember(Parameter param) => $"""
-    /// <summary>
-    /// {Summary}
-    /// </summary>
-    {Generator.GenerateMember(param)}
-    """;
+    string IGeneratedMember.GenerateMember(Parameter param)
+    {
+        var sb = new StringBuilder()
+        .AppendLine("/// <summary>");
+        foreach (var line in Summary.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Select(static text => $"/// {text}"))
+            sb.AppendLine(line);
+        return sb.AppendLine("/// </summary>")
+        .AppendLine(Generator.GenerateMember(param))
+        .ToString();
+    }
 }
 
 record GenerateField(string Name, bool IsReadonly, string Scope, string AssignFormat, string? Type) : IGeneratedMember
