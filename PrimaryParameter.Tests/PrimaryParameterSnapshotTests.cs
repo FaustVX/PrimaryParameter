@@ -263,4 +263,17 @@ public class PrimaryParameterSnapshotTests
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task GenerateSingleLineDocumentation()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class C([Property(Summary = "Documentation")] int i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
 }
