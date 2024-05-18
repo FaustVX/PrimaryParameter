@@ -289,4 +289,18 @@ public class PrimaryParameterSnapshotTests
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task DonterrorOnBaseCall()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B(int i);
+            public class D([DoNotUse]int i) : B(i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
 }

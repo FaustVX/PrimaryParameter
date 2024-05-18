@@ -44,6 +44,8 @@ namespace ConsoleApp1
 #endif
     }
 
+    public class D([DoNotUse]int i) : C(i, "");
+
     public partial record struct R
     {
         partial class C<T>([Field] T s)

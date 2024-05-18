@@ -15,7 +15,7 @@
 	- Based on @333fred and @CyrusNajmabadi https://discord.com/channels/143867839282020352/598678594750775301/1176598732691734568
 - [ ] Add a code-fix for [CS9113](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/constructor-errors#primary-constructor-declaration)
 	- Add `[Field]` or `[Property]` or `[DoNotUse]` (or `[RefField]` to ref struct) to primary parameter
-- [ ] Don't generate `PC01` on primary class base arguments
+- [x] Don't generate `PC01` on primary class base arguments
 	- `class Derived([DoNotUse] int i) : Base(i) { }` (Don't error on `Base(i)`)
 - [x] Allow for `summary` documentation ([#8](https://github.com/FaustVX/PrimaryParameter/issues/8))
 	- Add `Summary` Property to `[Field]`, `[Property]` and `[RefField]`.

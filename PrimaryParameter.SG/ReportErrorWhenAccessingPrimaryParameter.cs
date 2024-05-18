@@ -19,6 +19,7 @@ class ReportErrorWhenAccessingPrimaryParameter(ParameterSyntax paramSyntax, Sema
             if (allowInMemberInit && Contains(node, static node => node switch
             {
                 FieldDeclarationSyntax => true,
+                PrimaryConstructorBaseTypeSyntax => true,
                 PropertyDeclarationSyntax { Initializer: not null, ExpressionBody: null } => true,
                 _ => false,
             }))
