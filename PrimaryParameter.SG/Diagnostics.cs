@@ -22,7 +22,7 @@ static class Diagnostics
     public static readonly DiagnosticDescriptor WarningOnNonPrimaryParameter = new(
         id: "PC02",
         title: "Attribute generate nothing",
-        messageFormat: "Use this attributes only on primary parameter",
+        messageFormat: "Use this attribute only on primary parameter",
         category: "tests",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true);
