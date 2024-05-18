@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.3.3" />
+    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.3.4" />
     <!-- <ProjectReference Include="..\PrimaryParameter.SG\PrimaryParameter.SG.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="All" /> -->
   </ItemGroup>
   
