@@ -6,8 +6,8 @@
       Severity: Error,
       WarningLevel: 0,
       Location: : (3,13)-(3,14),
-      MessageFormat: Can't access a primary parameter ('{0}') with a [Field] [RefField], [Property] or [DoNotUse] attribute, use {1},
-      Message: Can't access a primary parameter ('i') with a [Field] [RefField], [Property] or [DoNotUse] attribute, use ,
+      MessageFormat: Can't access a primary parameter ('{0}') with a [Field], [RefField], [Property] or [DoNotUse] attribute, use {1},
+      Message: Can't access a primary parameter ('i') with a [Field], [RefField], [Property] or [DoNotUse] attribute, use ,
       Category: tests
     }
   ]

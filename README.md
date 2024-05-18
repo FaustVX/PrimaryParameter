@@ -49,7 +49,7 @@ ref partial struct Ref([RefField(IsReadonlyRef = false, IsRefReadonly = false), 
 }
 ```
 
-To enable the feature, type `[Field]` `[RefField]`, `[Property]`, or `[DoNotUse]` before the primary parameter you want.
+To enable the feature, type `[Field]`, `[RefField]`, `[Property]`, or `[DoNotUse]` before the primary parameter you want.
 
 You can type as many attributes as you want on a single parameter (Except for `DoNotUse`).
 
