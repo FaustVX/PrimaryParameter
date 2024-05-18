@@ -284,9 +284,10 @@ internal class Generator : IIncrementalGenerator
                         var type = GetAttributePropertyTypeOf(operation, "Type", out _);
                         var isReadonly = isReadonlyType || GetAttributeProperty<bool>(operation, "IsReadonly", out _, defaultValue: GenerateField.DefaultReadonly);
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateField.DefaultScope;
+                        var summary = GetAttributeProperty<string>(operation, "Summary", out _);
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateField(name, isReadonly, scope, format, type)))
+                        else if (!memberNames.Add(new GenerateField(name, isReadonly, scope, format, type).TryCreateSummary(summary)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (refFieldAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
@@ -295,10 +296,11 @@ internal class Generator : IIncrementalGenerator
                         nameLocation ??= attribute.GetLocation();
                         var isReadonlyRef = isReadonlyType || GetAttributeProperty<bool>(operation, "IsReadonlyRef", out _, defaultValue: GenerateRefField.DefaultReadonlyRef);
                         var isRefReadonly = GetAttributeProperty<bool>(operation, "IsRefReadonly", out _, defaultValue: GenerateRefField.DefaultRefReadonly);
+                        var summary = GetAttributeProperty<string>(operation, "Summary", out _);
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateRefField.DefaultScope;
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateRefField(name, isReadonlyRef, isRefReadonly, scope)))
+                        else if (!memberNames.Add(new GenerateRefField(name, isReadonlyRef, isRefReadonly, scope).TryCreateSummary(summary)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (propertyAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
@@ -309,9 +311,10 @@ internal class Generator : IIncrementalGenerator
                         var type = GetAttributePropertyTypeOf(operation, "Type", out _);
                         var setter = GetAttributeProperty<string>(operation, "Setter", out _) ?? GenerateProperty.DefaultSetter;
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateProperty.DefaultScope;
+                        var summary = GetAttributeProperty<string>(operation, "Summary", out _);
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateProperty(name, setter, scope, format, type)))
+                        else if (!memberNames.Add(new GenerateProperty(name, setter, scope, format, type).TryCreateSummary(summary)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (doNotUseAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
