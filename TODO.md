@@ -17,5 +17,5 @@
 	- Add `[Field]` or `[Property]` or `[DoNotUse]` (or `[RefField]` to ref struct) to primary parameter
 - [ ] Don't generate `PC01` on primary class base arguments
 	- `class Derived([DoNotUse] int i) : Base(i) { }` (Don't error on `Base(i)`)
-- [ ] Allow for `summary` documentation ([#8](https://github.com/FaustVX/PrimaryParameter/issues/8))
+- [x] Allow for `summary` documentation ([#8](https://github.com/FaustVX/PrimaryParameter/issues/8))
 	- Add `Summary` Property to `[Field]`, `[Property]` and `[RefField]`.
