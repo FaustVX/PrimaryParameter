@@ -77,12 +77,10 @@ namespace ConsoleApp1
 
 #if SHOW_ERRORS
     [StructLayout(LayoutKind.Auto)]
-    public readonly partial struct S([RefField(IsRefReadonly = false, Name = nameof(S.Abc))]ref int i, [RefField]int a)
-    { }
+    public readonly partial struct S([RefField(IsRefReadonly = false, Name = nameof(S.Abc))]ref int i, [RefField]int a);
 #endif
 
-    public partial class ParamNameOf([Field(AssignFormat = $$"""{0}.{{nameof(dateTime.Day)}}""", Type = typeof(int), Name = nameof(ParamNameOf.Day))] DateTime dateTime)
-    { }
+    public partial class ParamNameOf([Field(AssignFormat = $$"""{0}.{{nameof(dateTime.Day)}}""", Type = typeof(int), Name = nameof(ParamNameOf.Day))] DateTime dateTime);
 }
 
 public partial struct C([Field] int i)
