@@ -23,9 +23,9 @@
     <!-- https://weblog.west-wind.com/posts/2022/Sep/11/Referencing-a-Local-Private-NuGet-Package-in-your-Solution#project-specific-packagesource -->
     <RestoreAdditionalProjectSources Condition="Exists('../PrimaryParameter.SG/bin/Release')">$(RestoreAdditionalProjectSources);../PrimaryParameter.SG/bin/Release</RestoreAdditionalProjectSources>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.3.4" />
+    <PackageReference Include="FaustVX.PrimaryParameter.SG" Version="1.4.0" />
     <!-- <ProjectReference Include="..\PrimaryParameter.SG\PrimaryParameter.SG.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="All" /> -->
   </ItemGroup>
   

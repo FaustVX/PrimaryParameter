@@ -21,7 +21,7 @@ partial class C([Field(Name = "_a", AssignFormat = "{0}.ToString()", Type = type
     /// <summary>
     /// Documentation
     /// </summary>
-    // private int I { get; init; } = i;              // generated Property
+    // private int I { get; init; } = i;            // generated Property
 # endregion
 
     public void M0()
@@ -101,6 +101,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.4.0|18/05/2024|Added `Conditional` on generated attributes|
 |v1.3.4|18/05/2024|Added `<summary>` generation|
 |v1.3.3|01/12/2023|Renamed `DontUse` to `DoNotUse`|
 |v1.3.2|19/11/2023|Don't generate the partial generated type if not needed|
