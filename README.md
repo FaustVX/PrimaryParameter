@@ -101,6 +101,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.5.0|18/05/2024|Don't generate `PC01` on a primary contructor base call|
 |v1.4.0|18/05/2024|Added `Conditional` on generated attributes|
 |v1.3.4|18/05/2024|Added `<summary>` generation|
 |v1.3.3|01/12/2023|Renamed `DontUse` to `DoNotUse`|
