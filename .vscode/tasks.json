@@ -41,20 +41,17 @@
             }
         },
         {
-            "label": "watch",
+            "label": "pack",
             "command": "dotnet",
             "type": "process",
             "args": [
-                "watch",
-                "run",
-                "--project",
-                "${workspaceFolder}/ConsoleApp1/ConsoleApp1.csproj"
+                "pack",
             ],
             "problemMatcher": "$msCompile",
             "options": {
                 "statusbar": {
                     "running": {
-                        "label": "watching"
+                        "label": "packing"
                     }
                 }
             }
