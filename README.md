@@ -12,13 +12,16 @@ Forbid the use of primary constructor's parameters.
 ## Usage
 
 ```cs
-partial class C([Field(Name = "_a", AssignFormat = "{0}.ToString()", Type = typeof(string)), Field(Name = nameof(C._b)), Field, Property(Setter = "init")]int i) // type must be partial, but can be class / struct
+partial class C([Field(Name = "_a", AssignFormat = "{0}.ToString()", Type = typeof(string)), Field(Name = nameof(C._b)), Field, Property(Setter = "init", Summary = "Documentation")]int i) // type must be partial, but can be class / struct
 {
 # region Generated members
     // private readonly string _a = i.ToString();   // generated field (with type and formated assignment)
     // private readonly int _b = i;                 // generated field (with computed name)
     // private readonly int _i = i;                 // generated field
-    // private int { get; init; } = i;              // generated Property
+    /// <summary>
+    /// Documentation
+    /// </summary>
+    // private int I { get; init; } = i;              // generated Property
 # endregion
 
     public void M0()
@@ -58,15 +61,18 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ||`Scope`|To change the scope of the generated property|`private`|
 ||`AssignFormat`|To change the assignment for that field|`{0}`|
 ||`Type`|To change the type for that field|same type as parameter|
+||`Summary`|The `<summary>` documentation tag|`null`|
 |`RefField`|`Name`|Property to modify the generated field name|`_i` (for a parameter named `i`)|
 ||`IsReadnolyRef`|To generate the `readonly ref` modifier|`true`|
 ||`IsRefReadnoly`|To generate the `ref readonly` modifier|`true`|
 ||`Scope`|To change the scope of the generated property|`private`|
+||`Summary`|The `<summary>` documentation tag|`null`|
 |`Property`|`Name`|Property to modify the generated field name|`I` (for a parameter named `i`)|
 ||`Setter`|To generate the `set`, `init` or neither accessor along the `get`|`init`|
 ||`Scope`|To change the scope of the generated property|`public`|
 ||`AssignFormat`|To change the assignment for that property|`{0}`|
 ||`Type`|To change the type for that property|same type as parameter|
+||`Summary`|The `<summary>` documentation tag|`null`|
 |`DoNotUse`|`AllowInMemberInit`|Change to allow the use of parameter in member initializer|`true`|
 
 ## Reported Diagnostics
@@ -95,6 +101,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.3.4|18/05/2024|Added `<summary>` generation|
 |v1.3.3|01/12/2023|Renamed `DontUse` to `DoNotUse`|
 |v1.3.2|19/11/2023|Don't generate the partial generated type if not needed|
 |v1.3.1|19/11/2023|Fix a bug with member initialization|
