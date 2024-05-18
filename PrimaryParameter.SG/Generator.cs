@@ -433,7 +433,7 @@ internal class Generator : IIncrementalGenerator
             parentsCount++; // keep track of how many layers deep we are
         }
 
-        foreach (var item in inner)
+        foreach (var item in inner.SelectMany(static text => text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)))
         {
             // Write the actual target generation code here
             sb.Append(new string(' ', 4 * parentsCount));
