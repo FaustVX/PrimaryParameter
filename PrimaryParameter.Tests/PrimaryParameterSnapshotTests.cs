@@ -1,6 +1,5 @@
 namespace PrimaryParameter.Tests;
 
-[UsesVerify] // 👈 Adds hooks for Verify into XUnit
 public class PrimaryParameterSnapshotTests
 {
     [Fact]
