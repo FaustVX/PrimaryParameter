@@ -79,7 +79,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 |Code|Title|Message|Severity|
 |----|-----|-------|--------|
 |`PC01`|Accessing a Primary Parameter|Can't access a primary parameter ('{0}') with a [Field], [RefField], [Property] or [DoNotUse] attribute, use {1}|`Error`|
-|`PC02`|Attribute generate nothing|Use this attributes only on primary parameter|`Warning`|
+|`PC02`|Attribute generate nothing|Use this attribute only on primary parameter|`Warning`|
 |`PC03`|Attribute generate nothing|This member's name ('{0}') is already used|`Warning`<br/>`Error` when a member's name is already used in the type|
 |`PC04`|RefField in non ref struct|Can't apply [RefField] in non ref struct '{0}'|`Error`|
 |`PC05`|RefField on non ref parameter|Can't apply [RefField] on non ref parameter '{0}'|`Error`|
@@ -101,6 +101,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.6.0|22/06/2024|Fix a bug: accept arrays|
 |v1.5.1|19/05/2024|Modified some errors message|
 |v1.5.0|18/05/2024|Don't generate `PC01` on a primary contructor base call|
 |v1.4.0|18/05/2024|Added `Conditional` on generated attributes|

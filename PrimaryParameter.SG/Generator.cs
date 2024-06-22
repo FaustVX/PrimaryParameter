@@ -390,7 +390,13 @@ internal class Generator : IIncrementalGenerator
             if (((IPropertyReferenceOperation)namedArgument.Target).Property.Name == propertyName && namedArgument.Value is ITypeOfOperation { TypeOperand: var type })
             {
                 location = namedArgument.Value.Syntax.GetLocation();
-                return type.ToDisplayString();
+                return ToDisplayString(type);
+
+                static string ToDisplayString(ITypeSymbol type) => type switch
+                {
+                    IArrayTypeSymbol array => $"{ToDisplayString(array.ElementType)}[{new string(',', array.Rank - 1)}]",
+                    _ => type.ToDisplayString()
+                };
             }
         }
 

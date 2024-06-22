@@ -302,4 +302,56 @@ public class PrimaryParameterSnapshotTests
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task AcceptArrayImplicitly()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Field]object[] i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task AcceptArrayAsType()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Field(Type = typeof(object[]))]object[] i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task AcceptMultidimensionalArrayAsType()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Field(Type = typeof(object[,]))]object[,] i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task AcceptArrayOfArrayAsType()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Field(Type = typeof(object[][]))]object[][] i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
 }
