@@ -42,7 +42,7 @@ namespace ConsoleApp1
     {
         partial class C<T>
         {
-            private readonly char[] _c = c;
+            public char B { get => b[0]; init => b[0] = value; }
         }
     }
 }

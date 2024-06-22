@@ -73,6 +73,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ||`AssignFormat`|To change the assignment for that property|`{0}`|
 ||`Type`|To change the type for that property|same type as parameter|
 ||`Summary`|The `<summary>` documentation tag|`null`|
+||`WithoutBackingStorage`|Generate the body of the accessors, without a backing storage|`false`|
 |`DoNotUse`|`AllowInMemberInit`|Change to allow the use of parameter in member initializer|`true`|
 
 ## Reported Diagnostics
@@ -101,6 +102,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.7.0|23/06/2024|Added `WithoutBackingStorage` for `Property`|
 |v1.6.0|22/06/2024|Fix a bug: accept arrays|
 |v1.5.1|19/05/2024|Modified some errors message|
 |v1.5.0|18/05/2024|Don't generate `PC01` on a primary contructor base call|

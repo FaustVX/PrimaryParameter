@@ -14,5 +14,6 @@ namespace PrimaryParameter.SG
         public string Setter { get; init; }
         public string Scope { get; init; }
         public string Summary { get; init; }
+        public bool WithoutBackingStorage { get; init; }
     }
 }

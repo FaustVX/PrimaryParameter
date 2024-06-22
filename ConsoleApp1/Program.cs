@@ -48,7 +48,7 @@ namespace ConsoleApp1
 
     public partial record struct R
     {
-        partial class C<T>([Field] T s, [Field] char[] c)
+        partial class C<T>([Field] T s, [Property(WithoutBackingStorage = true, Type = typeof(char), AssignFormat = "{0}[0]")] char[] b)
             where T : struct
         {
 
