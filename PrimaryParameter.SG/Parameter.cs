@@ -51,12 +51,26 @@ record GenerateRefField(string Name, bool IsReadonlyRef, bool IsRefReadonly, str
     }
 }
 
-record GenerateProperty(string Name, string Setter, string Scope, string AssignFormat, string? Type) : IGeneratedMember
+record GenerateProperty(string Name, string Setter, string Scope, string AssignFormat, string? Type, bool WithoutBackingStorage) : IGeneratedMember
 {
     public static string DefaultScope { get; internal set; } = "public";
     public static string DefaultSetter { get; internal set; } = "init";
     public string GenerateMember(Parameter param)
-        => $$"""{{Scope}} {{Type ?? param.ParamType}} {{Name}} { get; {{(!string.IsNullOrWhiteSpace(Setter) ? Setter + "; " : "")}}} = {{string.Format(AssignFormat, param.ParamName)}};""";
+        => $$"""{{Scope}} {{Type ?? param.ParamType}} {{Name}} { {{GenerateGet(param)}}{{GenerateSetter(param)}} }{{GenerateInitializer(param)}}""";
+
+    private string GenerateGet(Parameter param)
+        => WithoutBackingStorage ? $"""get => {string.Format(AssignFormat, param.ParamName)};"""
+        : "get;";
+
+    private string GenerateSetter(Parameter param)
+        => string.IsNullOrWhiteSpace(Setter) ? ""
+        : WithoutBackingStorage ? $""" {Setter} => {string.Format(AssignFormat, param.ParamName)} = value;"""
+        : $" {Setter};";
+
+    private string GenerateInitializer(Parameter param)
+        => WithoutBackingStorage ? ""
+        : $$""" = {{string.Format(AssignFormat, param.ParamName)}};""";
+
     public IGeneratedMember TryCreateSummary(string? Summary)
     {
         if (string.IsNullOrEmpty(Summary))

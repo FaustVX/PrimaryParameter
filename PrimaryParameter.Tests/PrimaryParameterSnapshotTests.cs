@@ -354,4 +354,56 @@ public class PrimaryParameterSnapshotTests
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task GeneratePropertyWithoutBackingStorageGetOnly()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Property(WithoutBackingStorage = true, Setter = null)]int i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GeneratePropertyWithoutBackingStorageGetSet()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Property(WithoutBackingStorage = true, Setter = "set")]int i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GeneratePropertyWithoutBackingStorageGetInit()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Property(WithoutBackingStorage = true, Setter = "init")]int i);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task GeneratePropertyWithoutBackingStorageGetSetWithAssignFormat()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Property(WithoutBackingStorage = true, Setter = "set", Type = typeof(char), AssignFormat = "{0}[0]")]char[] c);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
 }

@@ -82,6 +82,7 @@ internal class Generator : IIncrementalGenerator
                         public string Setter { get; init; }
                         public string Scope { get; init; }
                         public string Summary { get; init; }
+                        public bool WithoutBackingStorage { get; init; }
                     }
                 }
 
@@ -324,9 +325,10 @@ internal class Generator : IIncrementalGenerator
                         var setter = GetAttributeProperty<string>(operation, "Setter", out _) ?? GenerateProperty.DefaultSetter;
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateProperty.DefaultScope;
                         var summary = GetAttributeProperty<string>(operation, "Summary", out _);
+                        var withoutBackingStorage = GetAttributeProperty<bool>(operation, "WithoutBackingStorage", out _, defaultValue: false);
                         if (semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateProperty(name, setter, scope, format, type).TryCreateSummary(summary)))
+                        else if (!memberNames.Add(new GenerateProperty(name, setter, scope, format, type, withoutBackingStorage).TryCreateSummary(summary)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (doNotUseAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
