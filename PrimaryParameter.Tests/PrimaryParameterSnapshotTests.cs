@@ -406,4 +406,20 @@ public class PrimaryParameterSnapshotTests
         // Pass the source code to our helper and snapshot test the output
         return TestHelper.Verify(source);
     }
+
+    [Fact]
+    public Task GeneratePropertyWithPartialModifier()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            public class B([Property(IsPartial = true)]int i)
+            {
+                public partial int I { get => field * 2; init; }
+            }
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
 }

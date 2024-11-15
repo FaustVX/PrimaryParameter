@@ -51,12 +51,12 @@ record GenerateRefField(string Name, bool IsReadonlyRef, bool IsRefReadonly, str
     }
 }
 
-record GenerateProperty(string Name, string Setter, string Scope, string AssignFormat, string? Type, bool WithoutBackingStorage) : IGeneratedMember
+record GenerateProperty(string Name, string Setter, string Scope, string AssignFormat, string? Type, bool WithoutBackingStorage, bool isPartial) : IGeneratedMember
 {
     public static string DefaultScope { get; internal set; } = "public";
     public static string DefaultSetter { get; internal set; } = "init";
     public string GenerateMember(Parameter param)
-        => $$"""{{Scope}} {{Type ?? param.ParamType}} {{Name}} { {{GenerateGet(param)}}{{GenerateSetter(param)}} }{{GenerateInitializer(param)}}""";
+        => $$"""{{Scope}}{{(isPartial ? " partial " : " ")}}{{Type ?? param.ParamType}} {{Name}} { {{GenerateGet(param)}}{{GenerateSetter(param)}} }{{GenerateInitializer(param)}}""";
 
     private string GenerateGet(Parameter param)
         => WithoutBackingStorage ? $"""get => {string.Format(AssignFormat, param.ParamName)};"""

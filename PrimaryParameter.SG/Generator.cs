@@ -83,6 +83,7 @@ internal class Generator : IIncrementalGenerator
                         public string Scope { get; init; }
                         public string Summary { get; init; }
                         public bool WithoutBackingStorage { get; init; }
+                        public bool IsPartial { get; init; }
                     }
                 }
 
@@ -326,9 +327,10 @@ internal class Generator : IIncrementalGenerator
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateProperty.DefaultScope;
                         var summary = GetAttributeProperty<string>(operation, "Summary", out _);
                         var withoutBackingStorage = GetAttributeProperty<bool>(operation, "WithoutBackingStorage", out _, defaultValue: false);
-                        if (semanticType.MemberNames.Contains(name))
+                        var isPartial = GetAttributeProperty<bool>(operation, "IsPartial", out _, defaultValue: false);
+                        if (!isPartial && semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
-                        else if (!memberNames.Add(new GenerateProperty(name, setter, scope, format, type, withoutBackingStorage).TryCreateSummary(summary)))
+                        else if (!memberNames.Add(new GenerateProperty(name, setter, scope, format, type, withoutBackingStorage, isPartial).TryCreateSummary(summary)))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, name));
                     }
                     else if (doNotUseAttributeSymbol.Equals(objectCreationOperation.Type, SymbolEqualityComparer.Default))
