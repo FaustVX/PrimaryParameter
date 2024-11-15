@@ -46,6 +46,11 @@ namespace ConsoleApp1
 
     public class D([DoNotUse]int i) : C(i, "");
 
+    public partial class P([Property(IsPartial = true)]int i)
+    {
+        public partial int I { get => field; init; }
+    }
+
     public partial record struct R
     {
         partial class C<T>([Field] T s, [Property(WithoutBackingStorage = true, Type = typeof(char), AssignFormat = "{0}[0]")] char[] b)

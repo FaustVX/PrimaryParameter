@@ -74,6 +74,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ||`Type`|To change the type for that property|same type as parameter|
 ||`Summary`|The `<summary>` documentation tag|`null`|
 ||`WithoutBackingStorage`|Generate the body of the accessors, without a backing storage|`false`|
+||`IsPartial`|Amend the `partial` modifier (you **_must_** specify the implementing part)|`false`|
 |`DoNotUse`|`AllowInMemberInit`|Change to allow the use of parameter in member initializer|`true`|
 
 ## Reported Diagnostics
@@ -102,6 +103,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.8.0|15/11/2024|Added `IsPartial` for `Property`|
 |v1.7.0|23/06/2024|Added `WithoutBackingStorage` for `Property`|
 |v1.6.0|22/06/2024|Fix a bug: accept arrays|
 |v1.5.1|19/05/2024|Modified some errors message|
