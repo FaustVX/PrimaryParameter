@@ -16,6 +16,5 @@ namespace PrimaryParameter.SG
         public string Scope { get; init; }
         public string Summary { get; init; }
         public bool WithoutBackingStorage { get; init; }
-        public bool IsPartial { get; init; }
     }
 }

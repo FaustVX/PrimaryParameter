@@ -46,7 +46,7 @@ namespace ConsoleApp1
 
     public class D([DoNotUse]int i) : C(i, "");
 
-    public partial class P([Property(IsPartial = true)]int i)
+    public partial class P([Property]int i)
     {
         public partial int I { get => field; init; }
     }

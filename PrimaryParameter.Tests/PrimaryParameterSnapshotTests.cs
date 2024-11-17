@@ -413,7 +413,7 @@ public class PrimaryParameterSnapshotTests
         // The source code to test
         var source = """
             using PrimaryParameter.SG;
-            public class B([Property(IsPartial = true)]int i)
+            public class B([Property]int i)
             {
                 public partial int I { get => field * 2; init; }
             }

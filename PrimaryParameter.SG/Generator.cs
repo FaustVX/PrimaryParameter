@@ -83,7 +83,6 @@ internal class Generator : IIncrementalGenerator
                         public string Scope { get; init; }
                         public string Summary { get; init; }
                         public bool WithoutBackingStorage { get; init; }
-                        public bool IsPartial { get; init; }
                     }
                 }
 
@@ -327,7 +326,10 @@ internal class Generator : IIncrementalGenerator
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateProperty.DefaultScope;
                         var summary = GetAttributeProperty<string>(operation, "Summary", out _);
                         var withoutBackingStorage = GetAttributeProperty<bool>(operation, "WithoutBackingStorage", out _, defaultValue: false);
-                        var isPartial = GetAttributeProperty<bool>(operation, "IsPartial", out _, defaultValue: false);
+                        var visitor = new IsPartialPropertyVisitor(name);
+                        containingType.Accept(visitor);
+                        var isPartial = visitor.IsPartial;
+
                         if (!isPartial && semanticType.MemberNames.Contains(name))
                             context.ReportDiagnostic(Diagnostic.Create(Diagnostics.WarningOnUsedMember, nameLocation, effectiveSeverity: DiagnosticSeverity.Error, null, null, name));
                         else if (!memberNames.Add(new GenerateProperty(name, setter, scope, format, type, withoutBackingStorage, isPartial).TryCreateSummary(summary)))
@@ -340,6 +342,13 @@ internal class Generator : IIncrementalGenerator
             yield return parameter;
             containingType.Accept(new ReportErrorWhenAccessingPrimaryParameter(paramSyntax, semanticModel, context, parameter, allowInMemberInit));
         }
+    }
+
+    sealed class IsPartialPropertyVisitor(string propertyName) : CSharpSyntaxWalker
+    {
+        public bool IsPartial { get; private set; }
+        public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+        => IsPartial = propertyName == node.Identifier.Text && node.Modifiers.Any(SyntaxKind.PartialKeyword);
     }
 
     static T? GetAttributeProperty<T>(IAttributeOperation attributeData, string propertyName, out Location? location)
