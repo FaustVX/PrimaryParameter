@@ -304,6 +304,20 @@ public class PrimaryParameterSnapshotTests
     }
 
     [Fact]
+    public Task AcceptNamespacedType()
+    {
+        // The source code to test
+        var source = """
+            using PrimaryParameter.SG;
+            using System.Xml.XPath;
+            public class B([Field]XPathExpression b);
+            """;
+
+        // Pass the source code to our helper and snapshot test the output
+        return TestHelper.Verify(source);
+    }
+
+    [Fact]
     public Task AcceptArrayImplicitly()
     {
         // The source code to test
