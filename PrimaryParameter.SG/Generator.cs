@@ -294,7 +294,7 @@ internal class Generator : IIncrementalGenerator
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? ("_" + paramSyntax.Identifier.Text);
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
-                        var type = GetAttributePropertyTypeOf(operation, "Type", out _);
+                        var type = GetAttributePropertyTypeOf(operation, "Type", out _) ?? ToSyntaxDisplayString(paramSyntax.Type!);
                         var isReadonly = isReadonlyType || GetAttributeProperty<bool>(operation, "IsReadonly", out _, defaultValue: GenerateField.DefaultReadonly);
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateField.DefaultScope;
                         var summary = GetAttributeProperty<string>(operation, "Summary", out _);
@@ -321,7 +321,7 @@ internal class Generator : IIncrementalGenerator
                         var name = GetAttributeProperty<string>(operation, "Name", out var nameLocation) ?? (char.ToUpper(paramSyntax.Identifier.Text[0]) + paramSyntax.Identifier.Text[1..]);
                         nameLocation ??= attribute.GetLocation();
                         var format = GetAttributeProperty<string>(operation, "AssignFormat", out _) ?? "{0}";
-                        var type = GetAttributePropertyTypeOf(operation, "Type", out _);
+                        var type = GetAttributePropertyTypeOf(operation, "Type", out _) ?? ToSyntaxDisplayString(paramSyntax.Type!);
                         var setter = GetAttributeProperty<string>(operation, "Setter", out _) ?? GenerateProperty.DefaultSetter;
                         var scope = GetAttributeProperty<string>(operation, "Scope", out _) ?? GenerateProperty.DefaultScope;
                         var summary = GetAttributeProperty<string>(operation, "Summary", out _);
@@ -341,6 +341,25 @@ internal class Generator : IIncrementalGenerator
             var parameter = new Parameter(GetNamespace(containingType), ParentClass.GetParentClasses(containingType)!, paramSyntax.Identifier.Text, semanticModel.GetTypeInfo(paramSyntax.Type!).Type!.ToDisplayString(), [.. memberNames]);
             yield return parameter;
             containingType.Accept(new ReportErrorWhenAccessingPrimaryParameter(paramSyntax, semanticModel, context, parameter, allowInMemberInit));
+
+            static string ToSyntaxDisplayString(TypeSyntax type) => type switch
+            {
+                ArrayTypeSyntax { ElementType: var element, RankSpecifiers: var rank } => $"{element}{DisplayStringArrayRank(rank)}",
+                _ => type.ToString()
+            };
+
+            static string DisplayStringArrayRank(SyntaxList<ArrayRankSpecifierSyntax> arrayRanks)
+            {
+                var sb = new StringBuilder();
+                foreach (var rank in arrayRanks)
+                {
+                    sb.Append('[');
+                    for (int i = 0; i < rank.Rank - 1; i++)
+                        sb.Append(',');
+                    sb.Append(']');
+                }
+                return sb.ToString();
+            }
         }
     }
 

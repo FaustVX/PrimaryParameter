@@ -102,6 +102,7 @@ You can type as many attributes as you want on a single parameter (Except for `D
 ## Versions
 |Version|Date|Comments|
 |-------|----|--------|
+|v1.9.0|23/11/2024|Fixed bug when the `Type` property was not specified with Arrays|
 |v1.8.1|17/11/2024|Automatically detect `partial` properties|
 |v1.8.0|15/11/2024|Added `IsPartial` for `Property`|
 |v1.7.0|23/06/2024|Added `WithoutBackingStorage` for `Property`|
